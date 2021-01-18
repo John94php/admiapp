@@ -26,7 +26,7 @@
 
                     </div>
 
-                    <a href="https://laravel.com/docs">
+                    <a href="news">
                         <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
                                 <div >Go</div>
 
