@@ -49,7 +49,7 @@ class PostsController extends Controller
                 ->with('errors', 'Somethings goes wrong.');
 
         return redirect()->back()
-            ->with('message', 'Article deleted successfully.');
+            ->with('message', 'Post deleted successfully.');
     }
 
 
