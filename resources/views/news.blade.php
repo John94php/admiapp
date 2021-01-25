@@ -29,9 +29,12 @@
                                     </div>
                                     <div class="flex items-center mb-4">
                                         <label for="category_id" class="w-24 font-semibold text-gray-700">Category</label>
-                                        <select name="" class="flex-grow border border-red-200 rounded py-1 px-3">
-                                            <option>1</option>
-                                        </select>
+                                  {{--      <select name="" class="flex-grow border border-red-200 rounded py-1 px-3">
+                                            @foreach($category as $categ)
+
+                                                <option value="{{$categ->category_id}}">{{$categ->category_title}}</option>
+                                                @endforeach
+                                        </select>--}}
                                     </div>
                                     <div class="flex items-center mb-4">
                                         <textarea name="description" class="flex-grow border border-red-200 rounded py-1 px-3" id="description" rows="8"></textarea>
@@ -46,7 +49,7 @@
                     </div>
                 </div>
 
-
+            @foreach ($all as $a)
                 <table class="border-collapse w-full">
                     <thead>
                     <tr>
@@ -60,15 +63,15 @@
                     <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
                             <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Title</span>
-                            KnobHome
+                            {{$a->news_title}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
                             <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Author</span>
-                            German
+                            {{$a->news_author}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
                             <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Author</span>
-                            German
+                            {{$a->category_id}}
                         </td>
                         <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
                             <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
@@ -78,6 +81,7 @@
                         </td>
                     </tbody>
                 </table>
+                @endforeach
             </div>
         </div>
     </div>
