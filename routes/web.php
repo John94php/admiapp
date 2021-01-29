@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MailsController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,7 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
-Route::middleware(['auth:sanctum', 'verified'])->get('/news', function () {
-    return view('news');
-})->name('news');
+
+Route::resource('news',NewsController::class);
+Route::resource('mailbox',MailsController::class);
 

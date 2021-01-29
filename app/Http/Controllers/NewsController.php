@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\News;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
+
 class NewsController extends Controller
 {
     /**
@@ -13,9 +15,9 @@ class NewsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $all = News::all()->get();
-            return view('news',['all'=>$all]);
+    {   $category = Category::all();
+        $all = DB::table('news')->join('category','news.category_id','=','category.category_id')->paginate(100);
+        return view('news',compact('all','category'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -36,7 +38,24 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+
+        $request->validate([
+            'news_title' => 'required',
+            'news_author' => 'required',
+            'news_body' => 'required',
+            'category_id' => 'required',
+            'created_at' => 'required',
+
+        ]);
+
+
+
+        News::create($request->all());
+
+
+
+        return redirect()->route('news.index')->with('success','news created successfully.');
     }
 
     /**

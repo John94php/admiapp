@@ -6,6 +6,16 @@
     </x-slot>
 
     <div class="py-12" >
+        @if ($message = Session::get('success'))
+
+            <div class="bg-green-lightest border-l-4 border-green text-green-dark p-4" role="alert">
+                <p>{{ $message }}</p>
+            </div>
+
+            </div>
+
+
+        @endif
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <button id="openBtn" class="border border-green-500 text-green-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-green-600 focus:outline-none focus:shadow-outline">Add new News</button>
@@ -18,30 +28,37 @@
                         </div>
                         <div class="p-4">
                             <div class="flex-grow">
-                                <div class="flex flex-col mx-40 mt-20">
-                                    <div class="flex items-center mb-4">
-                                        <label for="author" class="w-24 font-semibold text-gray-700">Author</label>
-                                        <input type="text" class="flex-grow border border-red-200 rounded py-1 px-3" value="{{Auth::user()->name}}" readonly />
-                                    </div>
-                                    <div class="flex items-center mb-4">
-                                        <label for="post_title" class="w-24 font-semibold text-gray-700">Title</label>
-                                        <input type="text" class="flex-grow border border-red-200 rounded py-1 px-3"  />
-                                    </div>
-                                    <div class="flex items-center mb-4">
-                                        <label for="category_id" class="w-24 font-semibold text-gray-700">Category</label>
-                                  {{--      <select name="" class="flex-grow border border-red-200 rounded py-1 px-3">
-                                            @foreach($category as $categ)
+                        <form action="{{route('news.store')}}" method="POST">
+                            @csrf
 
-                                                <option value="{{$categ->category_id}}">{{$categ->category_title}}</option>
-                                                @endforeach
-                                        </select>--}}
-                                    </div>
-                                    <div class="flex items-center mb-4">
-                                        <textarea name="description" class="flex-grow border border-red-200 rounded py-1 px-3" id="description" rows="8"></textarea>
-                                    </div>
-                                    <div class="flex items-center mb-4">
-                                        <button class="py-1 px-4 bg-red-800 text-red-100 font-semibold hover:bg-red-900 hover:shadow border border-red-200 rounded mr-2">Submit</button>
-                                    </div>
+                            <div class="flex flex-col mx-40 mt-20">
+                                <div class="flex items-center mb-4">
+                                    <label for="author" class="w-24 font-semibold text-gray-700">Author</label>
+                                    <input type="text" class="flex-grow border border-red-200 rounded py-1 px-3" name="news_author" value="{{Auth::user()->name}}"  />
+                                </div>
+                                <div class="flex items-center mb-4">
+                                    <label for="post_title" class="w-24 font-semibold text-gray-700">Title</label>
+                                    <input type="text" class="flex-grow border border-red-200 rounded py-1 px-3" name="news_title"  />
+                                </div>
+                                <div class="flex items-center mb-4">
+                                    <label for="category_id" class="w-24 font-semibold text-gray-700">Category</label>
+                                    <select name="category_id" class="flex-grow border border-red-200 rounded py-1 px-3">
+                                        @foreach($category as $categ)
+
+                                            <option value="{{$categ->category_id}}">{{$categ->category_title}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex items-center mb-4">
+                                    <textarea name="news_body" class="flex-grow border border-red-200 rounded py-1 px-3"  rows="8"></textarea>
+                                </div>
+                                <div class="flex items-center mb-4">
+                                    <input type="hidden" name="created_at" value="{{date('d-m-Y H:i:s')}}">
+                                    <button class="py-1 px-4 bg-red-800 text-red-100 font-semibold hover:bg-red-900 hover:shadow border border-red-200 rounded mr-2" type="submit">Submit</button>
+                                </div>
+                            </div>
+
+                        </form>
                                 </div>
                             </div>
                         </div>
@@ -49,39 +66,35 @@
                     </div>
                 </div>
 
-            @foreach ($all as $a)
-                <table class="border-collapse w-full">
-                    <thead>
-                    <tr>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Title</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Author</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Category</th>
-                        <th class="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
-                            <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Title</span>
-                            {{$a->news_title}}
-                        </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
-                            <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Author</span>
-                            {{$a->news_author}}
-                        </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
-                            <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Author</span>
-                            {{$a->category_id}}
-                        </td>
-                        <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
-                            <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
-                            <a href="#" class="text-blue-400 hover:text-blue-600 underline">View</a>
-                            <a href="#" class="text-blue-400 hover:text-blue-600 underline pl-6">Edit</a>
-                            <a href="#" class="text-blue-400 hover:text-blue-600 underline pl-6">Remove</a>
-                        </td>
-                    </tbody>
-                </table>
-                @endforeach
+            <!-- component -->
+            <div class="md:px-32 py-8 w-full">
+                <div class="shadow overflow-hidden rounded border-b border-gray-200">
+                    <table class="min-w-full bg-white">
+                        <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Title</th>
+                            <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Author</th>
+                            <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Content</th>
+                            <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Category</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-gray-700">
+                        @foreach($all as $a)
+
+                        <tr>
+                            <td class="w-1/3 text-left py-3 px-4">{{$a->news_title}}</td>
+                            <td class="w-1/3 text-left py-3 px-4">{{$a->news_author}}</td>
+                            <td class="text-left py-3 px-4">{{$a->news_body}}</td>
+                            <td class="text-left py-3 px-4">{{$a->category_title}}</td>
+
+                        </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+                {!! $all->links() !!}
             </div>
         </div>
     </div>
@@ -107,6 +120,7 @@
         if (event.target == modal) {
             modal.classList.remove('opacity-100');
             modal.classList.remove('z-50');
+            $("#modal").trigger("reset");
         }
     }
 </script>
