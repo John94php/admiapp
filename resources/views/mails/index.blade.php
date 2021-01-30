@@ -11,20 +11,152 @@
 
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 @extends('mails.layout')
-                <div class="d-flex align-items-start">
-                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fas fa-inbox"></i>&nbsp;Inbox</a>
-                        <a class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fas fa-paper-plane"></i>&nbsp;Sent</a>
-                        <a class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fas fa-pencil-alt"></i>&nbsp;Drafts</a>
-                        <a class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-trash"></i>&nbsp;Trash</a>
-                        <a class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cog"></i>&nbsp;Settings</a>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="inbox-tab" data-bs-toggle="tab" href="#inbox" role="tab"
+                           aria-controls="inbox" aria-selected="true"><i class="fas fa-inbox"></i>&nbsp;Inbox</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="sent-tab" data-bs-toggle="tab" href="#sent" role="tab"
+                           aria-controls="sent" aria-selected="false"><i
+                                class="fas fa-paper-plane"></i>&nbsp;Sent</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="drafts-tab" data-bs-toggle="tab" href="#drafts" role="tab"
+                           aria-controls="drafts" aria-selected="false"><i
+                                class="fas fa-pencil-alt"></i>&nbsp;Drafts</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="trash-tab" data-bs-toggle="tab" href="#trash" role="tab"
+                           aria-controls="trash" aria-selected="false"><i class="fas fa-trash"></i>&nbsp;Trash</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="inbox" role="tabpanel" aria-labelledby="inbox-tab">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>From</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                            @foreach($inbox as $i)
+                                        <?php
+                                        $style = $i->mail_status == "unseen" ? "bold": "lighter";
+
+                                        ?>
+                                    <tr style="font-weight:{{$style}}">
+
+                                    <td>{{$i->mail_title}}</td>
+                                    <td>{{$i->mail_sender}}</td>
+                                    <td>{{$i->created_at}}</td>
+                                    <td>
+                                        <a href="{{route('mailbox.show',$i->mail_id)}}" type="button" class="btn btn-outline-primary" data-id="{{$i->mail_id}}"  ><i class="fas fa-eye"></i>&nbsp;Show
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
 
                     </div>
-                    <div class="tab-content" id="v-pills-tabContent">
-                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
-                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
-                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
-                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+                    <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+
+                                <th>Title</th>
+                                <th>To</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($sent as $s)
+                                <tr>
+                                    <td>{{$s->mail_title}}</td>
+                                    <td>{{$s->mail_recipient}}</td>
+                                    <td>{{$s->created_at}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary"><i class="fas fa-eye"></i>&nbsp;Show
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+                    <div class="tab-pane fade" id="drafts" role="tabpanel" aria-labelledby="drafts-tab">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+
+                                <th>Title</th>
+                                <th>To</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($drafts as $d)
+                                <tr>
+                                    <td>{{$d->mail_title}}</td>
+                                    <td>{{$d->mail_recipient}}</td>
+                                    <td>{{$d->created_at}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary"><i class="fas fa-eye"></i>&nbsp;Show
+                                        </button>
+                                        <button type="button" class="btn btn-outline-warning"><i class="fas fa-edit"></i>&nbsp;Edit
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+                    <div class="tab-pane fade" id="trash" role="tabpanel" aria-labelledby="trash-tab">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($trash as $t)
+                                <tr>
+                                    <td>{{$t->mail_title}}</td>
+                                    <td>{{$t->created_at}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary"><i class="fas fa-eye"></i>&nbsp;Show
+                                        </button>
+                                        <button type="button" class="btn btn-outline-warning"><i class="fas fa-undo"></i>&nbsp;Restore
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+
+                        </table>
+
+
                     </div>
                 </div>
 
@@ -33,5 +165,3 @@
         </div>
     </div>
 </x-app-layout>
-
-
