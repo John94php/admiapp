@@ -24,7 +24,8 @@ class MailsController extends Controller
         return view('mails.showMail',compact('show'));
     }
     public function create() {
-
+        $users = DB::select('SELECT name,email FROM users');
+        return view('mails.createMail',['users'=>$users]);
     }
     public function store() {
 

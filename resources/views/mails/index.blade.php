@@ -6,11 +6,13 @@
     </x-slot>
 
     <div class="py-12">
-
+x
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 @extends('mails.layout')
+                <a href="{{route('mailbox.create')}}" class="btn btn-outline-dark m-t-md"><i class="fas fa-plus"></i>&nbsp;Create New</a>
+
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" id="inbox-tab" data-bs-toggle="tab" href="#inbox" role="tab"

@@ -26,4 +26,3 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::resource('news',NewsController::class);
 Route::resource('mailbox',MailsController::class);
 
-Route::post('show/{id}',[MailsController::class,'show']);
