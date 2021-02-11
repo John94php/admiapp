@@ -6,16 +6,7 @@
     </x-slot>
 
     <div class="py-12" >
-        @if ($message = Session::get('success'))
 
-            <div class="bg-green-lightest border-l-4 border-green text-green-dark p-4" role="alert">
-                <p>{{ $message }}</p>
-            </div>
-
-            </div>
-
-
-        @endif
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <button id="openBtn" class="border border-green-500 text-green-500 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-green-600 focus:outline-none focus:shadow-outline">Add new News</button>
@@ -121,6 +112,7 @@
             modal.classList.remove('opacity-100');
             modal.classList.remove('z-50');
             $("#modal").trigger("reset");
+            location.reload();
         }
     }
 </script>

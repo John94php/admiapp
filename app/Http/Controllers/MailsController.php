@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Mails;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MailsController extends Controller
 {
     public function index() {
-        $inbox = DB::table('mails')->where('mail_folder','=','inbox')->get();
-        $sent = DB::table('mails')->where('mail_folder','=','sent')->get();
-        $drafts = DB::table('mails')->where('mail_folder','=','drafts')->get();
-        $trash = DB::table('mails')->where('mail_folder','=','trash')->get();
+        $user_id = Auth::user()->id;
+        $inbox = DB::table('mails')->where('mail_folder','=','inbox',)->where('user_id','=',$user_id)->get();
+        $sent = DB::table('mails')->where('mail_folder','=','sent')->where('user_id','=',$user_id)->get();
+        $drafts = DB::table('mails')->where('mail_folder','=','drafts')->where('user_id','=',$user_id)->get();
+        $trash = DB::table('mails')->where('mail_folder','=','trash')->where('user_id','=',$user_id)->get();
         $form = "test";
         return view('mails.index',['inbox'=>$inbox,'sent'=>$sent,'drafts'=>$drafts,'trash'=>$trash,'form'=>$form]);
     }
@@ -30,7 +32,9 @@ class MailsController extends Controller
     public function store() {
 
     }
-    public function delete() {
+    public function delete($id) {
+        $sql = DB::table('mails')->update('mail_folder','=','trash')->where('mail_id','=',$id);
+        return redirect('mails.index');
 
     }
 }

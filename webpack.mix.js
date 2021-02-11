@@ -17,6 +17,7 @@ mix.js('resources/js/app.js', 'public/js')
         require('tailwindcss'),
         require('autoprefixer'),
     ]);
+ mix.js('resources/js/mails.js', 'public/js');
 
 if (mix.inProduction()) {
     mix.version();
