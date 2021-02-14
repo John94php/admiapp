@@ -40,7 +40,7 @@
           <i class="fas fa-envelope-open"></i>
 
             </svg>
-            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="/mailbox" class="underline hover:text-blue-600">Mailbox</a>
+            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="{{route('mailbox.index')}}" class="underline hover:text-blue-600">Mailbox</a>
             </div>
         </div>
 

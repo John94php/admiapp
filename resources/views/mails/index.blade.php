@@ -6,7 +6,11 @@
     </x-slot>
 
     <div class="py-12">
-x
+        @if ($message = Session::get('success'))
+        <p class="alert alert-info">{{$message}}</p>
+
+        @endif
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -146,8 +150,10 @@ x
                                     <td>
                                         <button type="button" class="btn btn-outline-primary"><i class="fas fa-eye"></i>&nbsp;Show
                                         </button>
-                                        <button type="button" class="btn btn-outline-warning"><i class="fas fa-undo"></i>&nbsp;Restore
-                                        </button>
+                                        <form action="{{route('mailbox.restore',$t->mail_id)}}" method="POST">
+                                            @csrf
+                                        <button type="submit" class="btn btn-outline-warning"><i class="fas fa-undo"></i>&nbsp;Restore                                        </button>
+                                        </form>
                                         <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i>&nbsp;Delete
                                         </button>
                                     </td>
