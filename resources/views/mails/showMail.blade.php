@@ -10,8 +10,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <a href="/mailbox" class="btn btn-outline-primary">Return</a>
             @foreach($show as $s)
+                <label class="badge bg-primary">Current folder : {{$s->mail_folder}}</label>
                 <div class="btn-group float-end">
-                    <form action="" method="post">
                         @csrf
                         <div class="dropdown">
                             <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button"
@@ -19,23 +19,39 @@
                                 <i class="fas fa-expand-arrows-alt"></i>&nbsp;Move to
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        {{--        <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>--}}
+                                <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="inbox">Inbox</button></li>
+                                <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="sent">Sent</button></li>
+                                <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="drafts">Drafts</button></li>
+
                                 @foreach($showcog as $cog)
-                                    <li>{{$cog->folders}}</li>
+                                    <?php
+                                    $folders = explode(",", $cog->folders);
+                                    ?>
+                                    @foreach($folders as $fold)
+
+                                            <form action="{{route('mailbox.movetoFolder',$s->mail_id)}}" method="POST">
+
+                                                @method('POST')
+                                                @csrf
+
+                                            <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="{{$fold}}">{{$fold}}</button></li>
+                                            </form>
 
                                     @endforeach
+
+                                @endforeach
                             </ul>
                         </div>
+                    <form action="" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-success btn-sm"><i class="fas fa-reply"></i>&nbsp;Reply
+                        </button>
                     </form>
                     <form action="" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-outline-success btn-sm"><i class="fas fa-reply"></i>&nbsp;Reply </button>
-                    </form>
-                    <form action="" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="fas fa-forward"></i>&nbsp;Forward to </button>
+                        <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="fas fa-forward"></i>&nbsp;Forward
+                            to
+                        </button>
                     </form>
                     <form action="{{route('mailbox.moveToTrash',$s->mail_id)}}" method="POST">
                         @csrf

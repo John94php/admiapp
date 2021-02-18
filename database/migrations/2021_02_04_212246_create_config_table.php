@@ -15,12 +15,11 @@ class CreateConfigTable extends Migration
     {
         Schema::create('config', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('us_id');
+            $table->foreign('us_id')->references('id')->on('users');
             $table->string('mailboxview');
             $table->string('msgcount');
             $table->text('folders');
-
             $table->timestamps();
         });
     }
@@ -34,4 +33,5 @@ class CreateConfigTable extends Migration
     {
         Schema::dropIfExists('config');
     }
+
 }

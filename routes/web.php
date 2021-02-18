@@ -25,5 +25,6 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 Route::resource('news',NewsController::class);
 Route::post('restore/{id}',[MailsController::class,'restore'])->name('mailbox.restore');
+Route::post('movetoFolder/{id}',[MailsController::class,'movetoFolder'])->name('mailbox.movetoFolder');
 Route::post('moveToTrash/{id}',[MailsController::class,'moveToTrash'])->name('mailbox.moveToTrash');
 Route::resource('mailbox',MailsController::class);
