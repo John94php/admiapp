@@ -19,6 +19,8 @@
                                 <i class="fas fa-expand-arrows-alt"></i>&nbsp;Move to
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <form action="{{route('mailbox.movetoFolder',$s->mail_id)}}" method="POST">
+
                                 <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="inbox">Inbox</button></li>
                                 <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="sent">Sent</button></li>
                                 <li><button type="submit" class="list-group-item list-group-item-action "  name="foldername" value="drafts">Drafts</button></li>
@@ -29,7 +31,6 @@
                                     ?>
                                     @foreach($folders as $fold)
 
-                                            <form action="{{route('mailbox.movetoFolder',$s->mail_id)}}" method="POST">
 
                                                 @method('POST')
                                                 @csrf

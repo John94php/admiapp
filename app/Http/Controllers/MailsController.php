@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 session_start();
 
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Mails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Input\Input;
 
 
 class MailsController extends Controller
@@ -46,44 +49,100 @@ class MailsController extends Controller
     public function store(Request $request)
     {
         $user_id = Auth::id();
-//        $user_id = Auth::user()->id;
         $user_mail = Auth::user()->email;
 
         $mail_sender = $request->input('mail_sender');
         $mail_recipient = $request->input('mail_recipient');
         $mail_title = $request->input('mail_title');
         $mail_body = $request->input('mail_body');
-        $dw = $request->input('dw');
-        $udw = $request->input('udw');
+        $dw = $request->input('mail_dw');
+        $udw = $request->input('mail_udw');
+
         $mail_body = $request->input('mail_body');
         $attachment1 = $request->input('mail_attachment1');
         $attachment2 = $request->input('mail_attachment2');
         $attachment3 = $request->input('mail_attachment3');
         $attachment4 = $request->input('mail_attachment4');
-
-        $recipient_id = DB::table('mails')->join('users','users.email','=','mails.mail_recipient')->select('users.id')->where('users.email','LIKE',$mail_recipient)->get();
-            foreach($recipient_id as $rid) {
-            $recipient_id = $rid->id;
-
-            }
-        $dw_id = DB::table('mails')->join('users','users.email','=','mails.mail_dw')->select('users.id')->where('users.email','LIKE',$dw)->get();
-        foreach($dw_id as $did) {
-            var_dump($did);
-            $dw_id = $did->id;
+        $recipient_id = DB::table('users')->select('id')->where('email','=',$mail_recipient)->get();
+        foreach($recipient_id as $rid) {
+         $recipientid = $rid->id;
         }
-     $udw_id = DB::table('mails')->join('users','users.email','=','mails.mail_udw')->select('users.id')->where('users.email','LIKE',$udw)->get();
-            foreach($udw_id as $udid) {
-            var_dump($udid);
-                $udw_id = $udid->id;
-            }
-        if(isset($_POST["mail_attachmentflag"])) {
+        $udw_id = DB::table('users')->select('id')->where('email','=',$udw)->get();
+        $dw_id = DB::table('users')->select('id')->where('email','=',$dw)->get();
+        foreach($dw_id as $did) {
+            $dwid = $did->id;
+        }
+        foreach($udw_id as $udid) {
+            $udwid = $udid->id;
+        }
+
+        if($_POST["mail_attachmentflag"]) {
             $attachment_flag = 1;
         } else {
             $attachment_flag = 0;
         }
-        if(isset($_POST["dw"])) {
+
+        if($_POST["mail_dw"]) {
             DB::table('mails')->insert([
-               'mail_sender' => $mail_sender,
+                'mail_sender' => $mail_sender,
+                'mail_recipient' => $mail_recipient,
+                'mail_title' => $mail_title,
+                'mail_body' => $mail_body,
+                'mail_attachmentflag' => $attachment_flag,
+                'mail_attachment1' => $attachment1,
+                'mail_attachment2' => $attachment2,
+                'mail_attachment3' => $attachment3,
+                'mail_attachment4' => $attachment4,
+                'mail_dw' => $dw,
+                'mail_udw' => $udw,
+                'mail_folder' => "sent",
+                'mail_status' => "seen",
+                'created_at' => date('Y-m-d H:i:s'),
+                'user_id' => $user_id
+
+            ]);
+
+            DB::table('mails')->insert([
+                'mail_sender' => $mail_sender,
+                'mail_recipient' => $mail_recipient,
+                'mail_title' => $mail_title,
+                'mail_body' => $mail_body,
+                'mail_attachmentflag' => $attachment_flag,
+                'mail_attachment1' => $attachment1,
+                'mail_attachment2' => $attachment2,
+                'mail_attachment3' => $attachment3,
+                'mail_attachment4' => $attachment4,
+                'mail_dw' => $dw,
+                'mail_udw' => $udw,
+                'mail_folder' => "inbox",
+                'mail_status' => "unseen",
+                'created_at' => date('Y-m-d H:i:s'),
+                'user_id' => $recipientid
+
+            ]);
+            DB::table('mails')->insert([
+                'mail_sender' => $mail_sender,
+                'mail_recipient' => $mail_recipient,
+                'mail_title' => $mail_title,
+                'mail_body' => $mail_body,
+                'mail_attachmentflag' => $attachment_flag,
+                'mail_attachment1' => $attachment1,
+                'mail_attachment2' => $attachment2,
+                'mail_attachment3' => $attachment3,
+                'mail_attachment4' => $attachment4,
+                'mail_dw' => $dw,
+                'mail_udw' => $udw,
+                'mail_folder' => "inbox",
+                'mail_status' => "unseen",
+                'created_at' => date('Y-m-d H:i:s'),
+                'user_id' => $dwid
+
+            ]);
+
+        }
+        else if($_POST["mail_udw"]) {
+            DB::table('mails')->insert([
+                'mail_sender' => $mail_sender,
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
@@ -115,7 +174,24 @@ class MailsController extends Controller
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
                 'created_at' =>date('Y-m-d H:i:s'),
-                'user_id' => $recipient_id
+                'user_id' => $recipientid
+            ]);
+            DB::table('mails')->insert([
+                'mail_sender' => $mail_sender,
+                'mail_recipient' =>$mail_recipient,
+                'mail_title' =>$mail_title,
+                'mail_body' =>$mail_body,
+                'mail_attachmentflag' =>$attachment_flag,
+                'mail_attachment1' =>$attachment1,
+                'mail_attachment2' =>$attachment2,
+                'mail_attachment3' =>$attachment3,
+                'mail_attachment4' => $attachment4,
+                'mail_dw' =>$dw,
+                'mail_udw' =>$udw,
+                'mail_folder' =>"inbox",
+                'mail_status' =>"unseen",
+                'created_at' =>date('Y-m-d H:i:s'),
+                'user_id' => $dwid
 
             ]);
             DB::table('mails')->insert([
@@ -133,83 +209,11 @@ class MailsController extends Controller
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
                 'created_at' =>date('Y-m-d H:i:s'),
-                'user_id' => $dw_id
+                'user_id' => $udwid
 
             ]);
-            if(isset($_POST["mail_udw"]) && isset($_POST["udw"])) {
-                DB::table('mails')->insert([
-                    'mail_sender' => $mail_sender,
-                    'mail_recipient' =>$mail_recipient,
-                    'mail_title' =>$mail_title,
-                    'mail_body' =>$mail_body,
-                    'mail_attachmentflag' =>$attachment_flag,
-                    'mail_attachment1' =>$attachment1,
-                    'mail_attachment2' =>$attachment2,
-                    'mail_attachment3' =>$attachment3,
-                    'mail_attachment4' => $attachment4,
-                    'mail_dw' =>$dw,
-                    'mail_udw' =>$udw,
-                    'mail_folder' =>"sent",
-                    'mail_status' =>"seen",
-                    'created_at' =>date('Y-m-d H:i:s'),
-                    'user_id' => $user_id
-
-                ]);
-                DB::table('mails')->insert([
-                    'mail_sender' => $mail_sender,
-                    'mail_recipient' =>$mail_recipient,
-                    'mail_title' =>$mail_title,
-                    'mail_body' =>$mail_body,
-                    'mail_attachmentflag' =>$attachment_flag,
-                    'mail_attachment1' =>$attachment1,
-                    'mail_attachment2' =>$attachment2,
-                    'mail_attachment3' =>$attachment3,
-                    'mail_attachment4' => $attachment4,
-                    'mail_dw' =>$dw,
-                    'mail_udw' =>$udw,
-                    'mail_folder' =>"inbox",
-                    'mail_status' =>"unseen",
-                    'created_at' =>date('Y-m-d H:i:s'),
-                    'user_id' => $recipient_id
-               ]);
-                DB::table('mails')->insert([
-                    'mail_sender' => $mail_sender,
-                    'mail_recipient' =>$mail_recipient,
-                    'mail_title' =>$mail_title,
-                    'mail_body' =>$mail_body,
-                    'mail_attachmentflag' =>$attachment_flag,
-                    'mail_attachment1' =>$attachment1,
-                    'mail_attachment2' =>$attachment2,
-                    'mail_attachment3' =>$attachment3,
-                    'mail_attachment4' => $attachment4,
-                    'mail_dw' =>$dw,
-                    'mail_udw' =>$udw,
-                    'mail_folder' =>"inbox",
-                    'mail_status' =>"unseen",
-                    'created_at' =>date('Y-m-d H:i:s'),
-                    'user_id' => $dw_id
-
-                ]);
-                DB::table('mails')->insert([
-                    'mail_sender' => $mail_sender,
-                    'mail_recipient' =>$mail_recipient,
-                    'mail_title' =>$mail_title,
-                    'mail_body' =>$mail_body,
-                    'mail_attachmentflag' =>$attachment_flag,
-                    'mail_attachment1' =>$attachment1,
-                    'mail_attachment2' =>$attachment2,
-                    'mail_attachment3' =>$attachment3,
-                    'mail_attachment4' => $attachment4,
-                    'mail_dw' =>$dw,
-                    'mail_udw' =>$udw,
-                    'mail_folder' =>"inbox",
-                    'mail_status' =>"unseen",
-                    'created_at' =>date('Y-m-d H:i:s'),
-                    'user_id' => $udw_id
-
-                ]);
-            }
-        } else {
+        }
+        else {
             DB::table('mails')->insert([
                 'mail_sender' => $mail_sender,
                 'mail_recipient' =>$mail_recipient,
@@ -243,9 +247,11 @@ class MailsController extends Controller
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
                 'created_at' =>date('Y-m-d H:i:s'),
-                'user_id' => $recipient_id
+                'user_id' => $recipientid
 
             ]);
+
+Storage::put('wydruk.pdf',$attachment1,'public');
         }
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
     }
@@ -261,6 +267,7 @@ public function update() {
 
     public function movetoFolder($id, Request $request)
     {
+        error_reporting(E_ALL);
         $folder = $request->foldername;
         DB::table('mails')->where('mail_id', '=', $id)->update(['mail_folder' => $folder]);
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message moved successfully');
