@@ -27,4 +27,7 @@ Route::resource('news',NewsController::class);
 Route::post('restore/{id}',[MailsController::class,'restore'])->name('mailbox.restore');
 Route::post('movetoFolder/{id}',[MailsController::class,'movetoFolder'])->name('mailbox.movetoFolder');
 Route::post('moveToTrash/{id}',[MailsController::class,'moveToTrash'])->name('mailbox.moveToTrash');
+Route::post('reply/{id}',[MailsController::class,'reply'])->name('mailbox.reply');
+Route::post('forward/{id}',[MailsController::class,'forward'])->name('mailbox.forward');
 Route::resource('mailbox',MailsController::class);
+

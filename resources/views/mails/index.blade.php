@@ -294,9 +294,9 @@
                 <button id="addfield" class="btn btn-outline-dark" type="button">Add folder</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save</button>
-
+                                   </form>
             </div>
-            </form>
+
 
         </div>
     </div>

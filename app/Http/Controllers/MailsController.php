@@ -50,19 +50,13 @@ class MailsController extends Controller
     {
         $user_id = Auth::id();
         $user_mail = Auth::user()->email;
-
         $mail_sender = $request->input('mail_sender');
         $mail_recipient = $request->input('mail_recipient');
         $mail_title = $request->input('mail_title');
-        $mail_body = $request->input('mail_body');
         $dw = $request->input('mail_dw');
         $udw = $request->input('mail_udw');
-
         $mail_body = $request->input('mail_body');
-        $attachment1 = $request->input('mail_attachment1');
-        $attachment2 = $request->input('mail_attachment2');
-        $attachment3 = $request->input('mail_attachment3');
-        $attachment4 = $request->input('mail_attachment4');
+        $created_at = date('Y-m-d H:i:s');
         $recipient_id = DB::table('users')->select('id')->where('email','=',$mail_recipient)->get();
         foreach($recipient_id as $rid) {
          $recipientid = $rid->id;
@@ -76,11 +70,6 @@ class MailsController extends Controller
             $udwid = $udid->id;
         }
 
-        if($_POST["mail_attachmentflag"]) {
-            $attachment_flag = 1;
-        } else {
-            $attachment_flag = 0;
-        }
 
         if($_POST["mail_dw"]) {
             DB::table('mails')->insert([
@@ -88,16 +77,11 @@ class MailsController extends Controller
                 'mail_recipient' => $mail_recipient,
                 'mail_title' => $mail_title,
                 'mail_body' => $mail_body,
-                'mail_attachmentflag' => $attachment_flag,
-                'mail_attachment1' => $attachment1,
-                'mail_attachment2' => $attachment2,
-                'mail_attachment3' => $attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' => $dw,
                 'mail_udw' => $udw,
                 'mail_folder' => "sent",
                 'mail_status' => "seen",
-                'created_at' => date('Y-m-d H:i:s'),
+                'created_at' => $created_at,
                 'user_id' => $user_id
 
             ]);
@@ -107,16 +91,11 @@ class MailsController extends Controller
                 'mail_recipient' => $mail_recipient,
                 'mail_title' => $mail_title,
                 'mail_body' => $mail_body,
-                'mail_attachmentflag' => $attachment_flag,
-                'mail_attachment1' => $attachment1,
-                'mail_attachment2' => $attachment2,
-                'mail_attachment3' => $attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' => $dw,
                 'mail_udw' => $udw,
                 'mail_folder' => "inbox",
                 'mail_status' => "unseen",
-                'created_at' => date('Y-m-d H:i:s'),
+                'created_at' => $created_at,
                 'user_id' => $recipientid
 
             ]);
@@ -125,16 +104,11 @@ class MailsController extends Controller
                 'mail_recipient' => $mail_recipient,
                 'mail_title' => $mail_title,
                 'mail_body' => $mail_body,
-                'mail_attachmentflag' => $attachment_flag,
-                'mail_attachment1' => $attachment1,
-                'mail_attachment2' => $attachment2,
-                'mail_attachment3' => $attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' => $dw,
                 'mail_udw' => $udw,
                 'mail_folder' => "inbox",
                 'mail_status' => "unseen",
-                'created_at' => date('Y-m-d H:i:s'),
+                'created_at' => $created_at,
                 'user_id' => $dwid
 
             ]);
@@ -146,16 +120,11 @@ class MailsController extends Controller
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
-                'mail_attachmentflag' =>$attachment_flag,
-                'mail_attachment1' =>$attachment1,
-                'mail_attachment2' =>$attachment2,
-                'mail_attachment3' =>$attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' =>$dw,
                 'mail_udw' =>$udw,
                 'mail_folder' =>"sent",
                 'mail_status' =>"seen",
-                'created_at' =>date('Y-m-d H:i:s'),
+                'created_at' =>$created_at,
                 'user_id' => $user_id
 
             ]);
@@ -164,16 +133,11 @@ class MailsController extends Controller
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
-                'mail_attachmentflag' =>$attachment_flag,
-                'mail_attachment1' =>$attachment1,
-                'mail_attachment2' =>$attachment2,
-                'mail_attachment3' =>$attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' =>$dw,
                 'mail_udw' =>$udw,
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
-                'created_at' =>date('Y-m-d H:i:s'),
+                'created_at' =>$created_at,
                 'user_id' => $recipientid
             ]);
             DB::table('mails')->insert([
@@ -181,16 +145,11 @@ class MailsController extends Controller
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
-                'mail_attachmentflag' =>$attachment_flag,
-                'mail_attachment1' =>$attachment1,
-                'mail_attachment2' =>$attachment2,
-                'mail_attachment3' =>$attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' =>$dw,
                 'mail_udw' =>$udw,
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
-                'created_at' =>date('Y-m-d H:i:s'),
+                'created_at' =>$created_at,
                 'user_id' => $dwid
 
             ]);
@@ -199,16 +158,11 @@ class MailsController extends Controller
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
-                'mail_attachmentflag' =>$attachment_flag,
-                'mail_attachment1' =>$attachment1,
-                'mail_attachment2' =>$attachment2,
-                'mail_attachment3' =>$attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' =>$dw,
                 'mail_udw' =>$udw,
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
-                'created_at' =>date('Y-m-d H:i:s'),
+                'created_at' =>$created_at,
                 'user_id' => $udwid
 
             ]);
@@ -219,16 +173,11 @@ class MailsController extends Controller
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
-                'mail_attachmentflag' =>$attachment_flag,
-                'mail_attachment1' =>$attachment1,
-                'mail_attachment2' =>$attachment2,
-                'mail_attachment3' =>$attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' =>null,
                 'mail_udw' =>null,
                 'mail_folder' =>"sent",
                 'mail_status' =>"seen",
-                'created_at' =>date('Y-m-d H:i:s'),
+                'created_at' =>$created_at,
                 'user_id' => $user_id
 
             ]);
@@ -237,24 +186,26 @@ class MailsController extends Controller
                 'mail_recipient' =>$mail_recipient,
                 'mail_title' =>$mail_title,
                 'mail_body' =>$mail_body,
-                'mail_attachmentflag' =>$attachment_flag,
-                'mail_attachment1' =>$attachment1,
-                'mail_attachment2' =>$attachment2,
-                'mail_attachment3' =>$attachment3,
-                'mail_attachment4' => $attachment4,
                 'mail_dw' =>null,
                 'mail_udw' =>null,
                 'mail_folder' =>"inbox",
                 'mail_status' =>"unseen",
-                'created_at' =>date('Y-m-d H:i:s'),
+                'created_at' =>$created_at,
                 'user_id' => $recipientid
 
             ]);
-
-Storage::put('wydruk.pdf',$attachment1,'public');
         }
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
+
     }
+public function reply(Request $request) {
+        $mail_sender = $request->input('mail_sender');
+        $mail_recipient = $request->input('mail_recipient');
+        $mail_title = $request->input('mail_title');
+        $mail_body = $request->input('mail_body');
+        $created_at = date('Y-m-d H:i:s');
+
+}
 public function update() {
 
 }
