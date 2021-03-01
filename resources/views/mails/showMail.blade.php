@@ -102,10 +102,12 @@
             <div class="modal-body">
 
                 <form action="{{route('mailbox.reply',$s->mail_id)}}" method="post">
-                <p>Sender: <input type="text" readonly="readonly" name="mail_sender" value="{{$s->mail_recipient}}"/> </p>
+                    @csrf
+
+                    <p>Sender: <input type="text" readonly="readonly" name="mail_sender" value="{{$s->mail_recipient}}"/> </p>
                 <p>Recipient: <input type="text" readonly="readonly" name="mail_recipient" value="{{$s->mail_sender}}"/> </p>
                  <p>Title: <input type="text" value="Re: {{$s->mail_title}}" name="mail_title"/></p>
-                    <p> Last Message: <textarea class="form-control" > {{"\n------------------------------------------------------------\n<".$s->mail_sender."> wrote: \n ".$s->mail_body}}</textarea></p>
+                    <p> Last Message: <textarea class="form-control" name="mail_body" > {{"\n------------------------------------------------------------\n<".$s->mail_sender."> wrote: \n ".$s->mail_body}}</textarea></p>
 
 
 
