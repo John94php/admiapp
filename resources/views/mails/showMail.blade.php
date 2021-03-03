@@ -55,13 +55,8 @@
                     </div>
                 </form>
                     <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#replyModal" data-id="{{$s->mail_id}}"><i class="fas fa-reply"></i>&nbsp;Reply</button>
+                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#forwardModal" data-id="{{$s->mail_id}}"><i class="fas fa-forward"></i>&nbsp;Forward to</button>
 
-                    <form action="" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="fas fa-forward"></i>&nbsp;Forward
-                            to
-                        </button>
-                    </form>
                     <form action="{{route('mailbox.moveToTrash',$s->mail_id)}}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger btn-sm "><i class="fas fa-trash"></i>&nbsp;
@@ -78,9 +73,11 @@
                             Title: {{$s->mail_title}}
                         </div>
                         <div class="card-body">
+                            <?php $copy = $s->mail_dw ? "<span class='badge bg-dark'>DW:</span> ".$s->mail_dw : "" ?>
                             <?php $title = ($s->mail_folder == 'sent') ? 'To: ' . $s->mail_recipient : 'From: ' . $s->mail_sender;?>
                             <h5 class="card-title">{{$title}}</h5>
-                            <p class="card-text">{{$s->mail_body}}</p>
+                                <?=$copy?>
+                                        <p class="border border-secondary bg-blue-100 mt-1.5">{{$s->mail_body}}</p>
                         </div>
                         <div class="card-footer text-muted">
                             {{$s->created_at}}
@@ -124,4 +121,47 @@
         </div>
     </div>
 </div>
+@endforeach
+
+
+@foreach($show as $s)
+    <div class="modal fade" id="forwardModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-id="{{$s->mail_id}}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Forward to</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="{{route('mailbox.forward',$s->mail_id)}}" method="post">
+                        @csrf
+
+                        <p>Sender: <input type="text" readonly="readonly" name="mail_sender" value="{{$s->mail_recipient}}"/> </p>
+                        <p>Recipient:
+                        <select name="mail_recipient">
+                            <option>...</option>
+                            @foreach($users as $user)
+                                <option value="{{$user->email}}">{{$user->name}}</option>
+                                @endforeach
+                        </select>
+                        </p>
+                        <p>Title: <input type="text" value="Fwd: {{$s->mail_title}}" name="mail_title"/></p>
+                        <p> Last Message: <textarea class="form-control" name="mail_body" > {{"\n------------------------------------------------------------\n<".$s->mail_sender."> wrote: \n ".$s->mail_body}}</textarea></p>
+
+
+
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fas fa-paper-plane"></i>&nbsp;Send</button>
+
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
 @endforeach

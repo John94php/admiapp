@@ -30,12 +30,14 @@ class MailsController extends Controller
     public function show($id)
     {
         $user_id = Auth::user()->id;
-
+        $name = Auth::user()->name;
+        $email = Auth::user()->email;
+        $users = DB::select('SELECT name,email FROM users WHERE name != ? AND email !=?', [$name, $email]);
         $change = DB::table('mails')->where('mail_id', '=', $id)->update(['mail_status' => 'seen']);
         $show = DB::table('mails')->where('mail_id', '=', $id)->get();
         $showcog = DB::table('config')->join('mails', 'mails.user_id', '=', 'config.us_id')->where('user_id', '=', $user_id)->get();
 
-        return view('mails.showMail', ['show' => $show, 'showcog' => $showcog]);
+        return view('mails.showMail', ['show' => $show, 'showcog' => $showcog,'users'=>$users]);
     }
 
     public function create()
@@ -194,7 +196,6 @@ class MailsController extends Controller
             ]);
         }
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
-
     }
 
     public function reply(Request $request)
@@ -235,6 +236,43 @@ class MailsController extends Controller
         ]);
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
 
+
+    }
+    public function forward(Request $request) {
+        $mail_sender = $request->input('mail_sender');
+        $mail_recipient = $request->input('mail_recipient');
+        $recipient_id = DB::table('users')->select('id')->where('email', '=', $mail_recipient)->get();
+        $sender_id = DB::table('users')->select('id')->where('email', '=', $mail_sender)->get();
+        foreach($recipient_id as $rid) {
+            $recipientid = $rid->id;
+        }
+        foreach($sender_id as $sid) {
+            $senderid = $sid->id;
+        }
+        $mail_title = $request->input('mail_title');
+        $mail_body = $request->input('mail_body');
+        $created_at = date('Y-m-d H:i:s');
+        DB::table('mails')->insert([
+            'mail_sender' => $mail_sender,
+            'mail_recipient' => $mail_recipient,
+            'mail_title' => $mail_title,
+            'mail_body' => $mail_body,
+            'created_at' => $created_at,
+            'mail_folder' => 'sent',
+            'mail_status' => 'seen',
+            'user_id' => $senderid
+        ]);
+        DB::table('mails')->insert([
+            'mail_sender' => $mail_sender,
+            'mail_recipient' => $mail_recipient,
+            'mail_title' => $mail_title,
+            'mail_body' => $mail_body,
+            'created_at' => $created_at,
+            'mail_folder' => 'inbox',
+            'mail_status' => 'unseen',
+            'user_id' => $recipientid
+        ]);
+        return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
 
     }
 

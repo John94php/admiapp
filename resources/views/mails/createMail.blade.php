@@ -21,12 +21,16 @@
                     </div>
                     <div class="mb-3">
                         <label for="to_email" class="form-label">To:</label>
-
-                        <input class="form-control"  name="mail_recipient" id="mail_recipient" placeholder="Type to search...">
+                        <select class="form-control" name="mail_recipient">
+                            <option>...</option>
+                            @foreach($users as $user)
+                                <option value="{{$user->email}}"  >{{$user->name}}</option>
+                                @endforeach
+                        </select>
 
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="mail_dw" name="mail_attachmentflag">
+                        <input class="form-check-input" type="checkbox" value="" id="mail_dw" name="dwcheckbox">
                         <label class="form-check-label" for="flexCheckDefault">
                             add DW
                         </label>
@@ -35,9 +39,36 @@
                     <div class="mb-3" id="dw" style="display: none">
                         <label for="to_email" class="form-label">DW:</label>
 
-                        <input class="form-control"  name="mail_dw" id="mail_dw" placeholder="Type to search...">
+                        <select class="form-control" name="mail_dw" >
+                            <option>...</option>
+                            @foreach($users as $user)
+                                <option value="{{$user->email}}"  >{{$user->name}}</option>
+                            @endforeach
+                        </select>
+
 
                     </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="mail_udw" name="udwcheckbox">
+                        <label class="form-check-label" for="mail_udw">
+                            add UDW
+                        </label>
+
+                    </div>
+                    <div class="mb-3" id="udw" style="display: none">
+                        <label for="mail_udw" class="form-label">UDW:</label>
+
+                        <select class="form-control" name="mail_udw">
+                            <option>...</option>
+                            @foreach($users as $user)
+                                <option value="{{$user->email}}"  >{{$user->name}}</option>
+                            @endforeach
+                        </select>
+
+
+                    </div>
+
 
 
                     <div class="mb-3">
@@ -61,7 +92,12 @@
     $("label[for='mail_udw']").hide();
     $("#mail_dw:checkbox").on('click',function() {
         $("#dw").toggle();
-
-    })
+        $("#mail_udw").toggle();
+        $("label[for='mail_udw']").toggle();
+    });
+    $("#mail_udw:checkbox").on('click',function() {
+        $("#udw").toggle();
+        $("label[for='mail_udw']").show();
+    });
 
 </script>
