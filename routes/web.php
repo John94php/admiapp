@@ -29,5 +29,8 @@ Route::post('movetoFolder/{id}',[MailsController::class,'movetoFolder'])->name('
 Route::post('moveToTrash/{id}',[MailsController::class,'moveToTrash'])->name('mailbox.moveToTrash');
 Route::post('reply/{id}',[MailsController::class,'reply'])->name('mailbox.reply');
 Route::post('forward/{id}',[MailsController::class,'forward'])->name('mailbox.forward');
+Route::post('addfolders',[MailsController::class,'addfolders'])->name('mailbox.addfolders');
+Route::post('deletefolder',[MailsController::class,'deletefolder'])->name('mailbox.deletefolder');
+
 Route::resource('mailbox',MailsController::class);
 

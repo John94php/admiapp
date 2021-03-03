@@ -5,8 +5,7 @@ var i = 1;
 
         $("#folderdiv").clone().appendTo('.modal-body');
             $("#folderdiv").attr('id','folderdiv'+i);
-
-        console.log(i);
+            $("input[name='mail_folder["+i+"']");
         i++;
 })
 })

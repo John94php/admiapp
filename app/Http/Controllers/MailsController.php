@@ -37,7 +37,7 @@ class MailsController extends Controller
         $show = DB::table('mails')->where('mail_id', '=', $id)->get();
         $showcog = DB::table('config')->join('mails', 'mails.user_id', '=', 'config.us_id')->where('user_id', '=', $user_id)->get();
 
-        return view('mails.showMail', ['show' => $show, 'showcog' => $showcog,'users'=>$users]);
+        return view('mails.showMail', ['show' => $show, 'showcog' => $showcog, 'users' => $users]);
     }
 
     public function create()
@@ -205,10 +205,10 @@ class MailsController extends Controller
         $mail_recipient = $request->input('mail_recipient');
         $recipient_id = DB::table('users')->select('id')->where('email', '=', $mail_recipient)->get();
         $sender_id = DB::table('users')->select('id')->where('email', '=', $mail_sender)->get();
-        foreach($recipient_id as $rid) {
+        foreach ($recipient_id as $rid) {
             $recipientid = $rid->id;
         }
-        foreach($sender_id as $sid) {
+        foreach ($sender_id as $sid) {
             $senderid = $sid->id;
         }
         $mail_title = $request->input('mail_title');
@@ -238,15 +238,17 @@ class MailsController extends Controller
 
 
     }
-    public function forward(Request $request) {
+
+    public function forward(Request $request)
+    {
         $mail_sender = $request->input('mail_sender');
         $mail_recipient = $request->input('mail_recipient');
         $recipient_id = DB::table('users')->select('id')->where('email', '=', $mail_recipient)->get();
         $sender_id = DB::table('users')->select('id')->where('email', '=', $mail_sender)->get();
-        foreach($recipient_id as $rid) {
+        foreach ($recipient_id as $rid) {
             $recipientid = $rid->id;
         }
-        foreach($sender_id as $sid) {
+        foreach ($sender_id as $sid) {
             $senderid = $sid->id;
         }
         $mail_title = $request->input('mail_title');
@@ -281,6 +283,47 @@ class MailsController extends Controller
 
     }
 
+    public function addfolders(Request $request)
+    {
+        $folder = $request->input('mail_folder');
+        $user_id = $request->input('user_id');
+        $list = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->get();
+        foreach ($list as $ls) {
+            if (empty($ls->folders)) {
+                $newArray .= $folder;
+            } else {
+                $newArray = $ls->folders . ',' . $folder;
+            }
+        }
+        DB::update('UPDATE config SET folders = ? WHERE us_id = ? ', [$newArray, $user_id]);
+        return redirect()->action([MailsController::class, 'index'])->with('success', 'List of folders updated succesfully');
+    }
+        public function deletefolder(Request $request) {
+        $user_id = $request->input('user_id');
+        $list = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->get();
+        $foldertodelete = $_POST["folder"];
+            foreach($list as $l) {
+               $newlist =  explode(',',$l->folders);
+            }
+                foreach($foldertodelete as $folder) {
+                if(in_array($folder,$newlist)) {
+                   $flipped =  array_flip($newlist);
+                    unset($flipped[$folder]);
+                    $newarray = array_flip($flipped);
+                    $flippedstring = implode(',',$newarray);
+                    DB::update('UPDATE config SET folders=? WHERE us_id = ?',[$flippedstring,$user_id]);
+                    if(empty($flipped)) {
+                        DB::update('UPDATE config SET folders =  null WHERE id = ?',[$user_id]);
+                    }
+                } else {
+                    echo "Nie ok";
+                }
+
+            }
+    return redirect()->action([MailsController::class, 'index'])->with('success', 'List of folders updated succesfully');
+
+
+        }
     public function moveToTrash($id)
     {
         DB::update('UPDATE mails SET mail_folder="trash" WHERE mail_id = ?', [$id]);
@@ -290,7 +333,6 @@ class MailsController extends Controller
 
     public function movetoFolder($id, Request $request)
     {
-        error_reporting(E_ALL);
         $folder = $request->foldername;
         DB::table('mails')->where('mail_id', '=', $id)->update(['mail_folder' => $folder]);
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message moved successfully');

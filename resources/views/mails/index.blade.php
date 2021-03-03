@@ -8,7 +8,13 @@
 
     <div class="py-12">
         @if ($message = Session::get('success'))
-        <p class="alert alert-info">{{$message}}</p>
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert">
+                <strong><i class="fas fa-thumbs-up"></i></strong> {{$message}}
+                <button type="button"  class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
 
         @endif
 
@@ -39,11 +45,14 @@
                     @foreach($configuration as $cog)
                         <?php
                         $folders = explode(",", $cog->folders);
+
                         ?>
                         @foreach($folders as $folder)
+                            @if(!empty($folder))
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link" id="<?=$folder?>-tab" data-bs-toggle="tab" href="#<?=$folder?>" role="tab" aria-controls="<?=$folder?>" aria-selected="false"><i class="fas fa-folder"></i>&nbsp;<?=$folder?></a>
                             </li>
+                                @endif
                         @endforeach
                     @endforeach
                     <li class="nav-item" role="presentation">
@@ -284,16 +293,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="{{route('mailbox.addfolders')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
                     <div class="input-group input-group-sm mb-3" id="folderdiv">
                         <span class="input-group-text" id="inputGroup-sizing-sm">Folder name:</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                        <input type="text" class="form-control" name="mail_folder"  aria-describedby="inputGroup-sizing-sm">
                     </div>
                 </div>
                                <div class="modal-footer">
-                <button id="addfield" class="btn btn-outline-dark" type="button">Add folder</button>
+
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Save</button>
                                    </form>
             </div>
 
@@ -309,9 +320,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="{{route('mailbox.deletefolder')}}" method="post">
+                    @csrf
+                    <input type="hidden" value="{{Auth::user()->id}}" name="user_id"/>
             <h4><label class="badge bg-secondary">Select folder(s) to remove</label></h4>
-                    <select class="form-select" multiple aria-label="multiple select example">
+                    <select class="form-select" multiple aria-label="multiple select example" name="folder[]">
                         @foreach($configuration as $cog)
                             <?php
                             $folders = explode(",", $cog->folders);
@@ -319,7 +332,7 @@
 
                             @foreach($folders as $fold)
 
-                                <option>{{$fold}}</option>
+                                <option value="{{$fold}}" >{{$fold}}</option>
 
                             @endforeach
 
@@ -329,7 +342,7 @@
                     <div class="modal-footer">
 
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
 
                     </div>
                 </form>
@@ -339,3 +352,8 @@
         </div>
     </div>
 </div>
+<script>
+    $("#alert button").on('click',function() {
+       $("#alert").hide();
+    });
+</script>
