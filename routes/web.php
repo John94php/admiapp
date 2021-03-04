@@ -31,6 +31,6 @@ Route::post('reply/{id}',[MailsController::class,'reply'])->name('mailbox.reply'
 Route::post('forward/{id}',[MailsController::class,'forward'])->name('mailbox.forward');
 Route::post('addfolders',[MailsController::class,'addfolders'])->name('mailbox.addfolders');
 Route::post('deletefolder',[MailsController::class,'deletefolder'])->name('mailbox.deletefolder');
-
+Route::post('msgcount',[MailsController::class,'msgcount'])->name('mailbox.msgcount');
 Route::resource('mailbox',MailsController::class);
 

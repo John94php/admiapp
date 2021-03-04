@@ -10,7 +10,7 @@
         @if ($message = Session::get('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert">
                 <strong><i class="fas fa-thumbs-up"></i></strong> {{$message}}
-                <button type="button"  class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
 
@@ -19,7 +19,8 @@
         @endif
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <a href="{{route('mailbox.create')}}" class="btn btn-outline-dark m-t-md"><i class="fas fa-plus"></i>&nbsp;Create New</a>
+            <a href="{{route('mailbox.create')}}" class="btn btn-outline-dark m-t-md"><i class="fas fa-plus"></i>&nbsp;Create
+                New</a>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg m-t-md">
 
 
@@ -49,10 +50,12 @@
                         ?>
                         @foreach($folders as $folder)
                             @if(!empty($folder))
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="<?=$folder?>-tab" data-bs-toggle="tab" href="#<?=$folder?>" role="tab" aria-controls="<?=$folder?>" aria-selected="false"><i class="fas fa-folder"></i>&nbsp;<?=$folder?></a>
-                            </li>
-                                @endif
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="<?=$folder?>-tab" data-bs-toggle="tab" href="#<?=$folder?>"
+                                       role="tab" aria-controls="<?=$folder?>" aria-selected="false"><i
+                                            class="fas fa-folder"></i>&nbsp;<?=$folder?></a>
+                                </li>
+                            @endif
                         @endforeach
                     @endforeach
                     <li class="nav-item" role="presentation">
@@ -74,21 +77,23 @@
                             </thead>
                             <tbody>
                             @foreach($inbox as $i)
-                                        <?php
-                                        $style = $i->mail_status == "unseen" ? "bold": "lighter";
+                                <?php
+                                $style = $i->mail_status == "unseen" ? "bold" : "lighter";
 
-                                        ?>
-                                    <tr style="font-weight:{{$style}}">
+                                ?>
+                                <tr style="font-weight:{{$style}}">
 
-                                        <td><a href="{{route('mailbox.show',$i->mail_id)}}">{{$i->mail_title}}</a></td>
+                                    <td><a href="{{route('mailbox.show',$i->mail_id)}}">{{$i->mail_title}}</a></td>
                                     <td>{{$i->mail_sender}}</td>
                                     <td>{{$i->created_at}}</td>
 
 
                                 </tr>
                             @endforeach
+
                             </tbody>
                         </table>
+                        {{ $inbox->onEachSide($number)->links() }}
 
                     </div>
                     <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
@@ -118,8 +123,7 @@
                             </tbody>
 
                         </table>
-
-
+                        {{ $sent->onEachSide($number)->links() }}
                     </div>
                     <div class="tab-pane fade" id="drafts" role="tabpanel" aria-labelledby="drafts-tab">
                         <table class="table table-bordered">
@@ -144,6 +148,7 @@
                             </tbody>
 
                         </table>
+                        {{ $drafts->onEachSide($number)->links() }}
 
 
                     </div>
@@ -167,9 +172,12 @@
                                         </button>
                                         <form action="{{route('mailbox.restore',$t->mail_id)}}" method="POST">
                                             @csrf
-                                        <button type="submit" class="btn btn-outline-warning"><i class="fas fa-undo"></i>&nbsp;Restore                                        </button>
+                                            <button type="submit" class="btn btn-outline-warning"><i
+                                                    class="fas fa-undo"></i>&nbsp;Restore
+                                            </button>
                                         </form>
-                                        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i>&nbsp;Delete
+                                        <button type="button" class="btn btn-outline-danger"><i
+                                                class="fas fa-trash"></i>&nbsp;Delete
                                         </button>
                                     </td>
                                 </tr>
@@ -177,14 +185,15 @@
                             </tbody>
 
                         </table>
-
+                        {{ $trash->onEachSide($number)->links() }}
 
                     </div>
-                @foreach($mysteryfold as $mf)
-                    <?php $folders = explode(",",$mf->folders)?>
-                    @foreach($folders as $folder)
-                            <div class="tab-pane fade" id="<?= $folder?>" role="tabpanel" aria-labelledby="<?= $folder?>-tab">
-                                <?php  $newbox = \Illuminate\Support\Facades\DB::table('mails')->where('mail_folder','=',$folder)->get();?>
+                    @foreach($mysteryfold as $mf)
+                        <?php $folders = explode(",", $mf->folders)?>
+                        @foreach($folders as $folder)
+                            <div class="tab-pane fade" id="<?= $folder?>" role="tabpanel"
+                                 aria-labelledby="<?= $folder?>-tab">
+                                <?php  $newbox = DB::table('mails')->where('mail_folder', '=', $folder)->get();?>
                                 <table class="table table-bordered">
                                     <thead>
                                     <th>Title</th>
@@ -193,25 +202,29 @@
                                     <tbody>
                                     @foreach($newbox as $box)
                                         <tr>
-        `                           <td><a href="{{route('mailbox.show',$box->mail_id)}}">{{$box->mail_title}}</a></td>
+
+                                            <td>
+                                                <a href="{{route('mailbox.show',$box->mail_id)}}">{{$box->mail_title}}</a>
+                                            </td>
                                             <td>{{$box->created_at}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
+                                    {{ $mysteryfold->onEachSide($number)->links() }}
                             </div>
 
                         @endforeach
                     @endforeach
 
 
-
                     <div class="tab-pane fade" id="cog" role="tabpanel" aria-labelledby="cog-tab">
-                       <legend class="badge bg-primary">Config for account {{Auth::user()->email}}</legend>
+                        <legend class="badge bg-primary">Config for account {{Auth::user()->email}}</legend>
                         <table class="table table-condensed small">
                             <tr>
                                 <td>Folders list</td>
-                                <td>      <ul class="list-group">
+                                <td>
+                                    <ul class="list-group">
                                         <li class="list-group-item">Inbox</li>
                                         <li class="list-group-item">Sent</li>
                                         <li class="list-group-item">Drafts</li>
@@ -222,35 +235,44 @@
                                             ?>
                                             @foreach($folders as $fold)
 
-                                                    <li class="list-group-item">{{$fold}}</button></li>
+                                                <li class="list-group-item">{{$fold}}</button></li>
 
                                             @endforeach
 
                                         @endforeach
                                     </ul>
-                                    <button class="btn btn-sm btn-outline-success" style="margin : 10px" data-bs-toggle="modal" data-bs-target="#addfolder">Add folder(s)</button>
-                                    <button class="btn btn-sm btn-outline-danger" style="margin : 10px" data-bs-toggle="modal" data-bs-target="#deletefolder">Delete folder(s)</button>
+                                    <button class="btn btn-sm btn-outline-success" style="margin : 10px"
+                                            data-bs-toggle="modal" data-bs-target="#addfolder">Add folder(s)
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="margin : 10px"
+                                            data-bs-toggle="modal" data-bs-target="#deletefolder">Delete folder(s)
+                                    </button>
 
                                 </td>
                             </tr>
                             <tr>
                                 <td>Number of messages per page</td>
                                 <td>
-                                    <select class="float-start">
-                                        <option>5</option>
-                                        <option>10</option>
-                                        <option>25</option>
-                                        <option>50</option>
-                                        <option>100</option>
-                                    </select>
-
+                                    <form action="{{route('mailbox.msgcount')}}" method="post">
+                                        @csrf
+                                    <select class="float-start" name="msgcount" id="msgcount">
+                                        <option value="0">...</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-outline-dark btn-sm" id="msgcountBtn">Change</button>
+                                    </form>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Layout</td>
                                 <td>
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                        <a href="#" class="list-group-item list-group-item-action active"
+                                           aria-current="true">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">Compact</h5>
                                             </div>
@@ -261,14 +283,16 @@
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">Buisness</h5>
                                             </div>
-                                            <p class="mb-1">List of folders is placing vertical and view is divided by three columns</p>
+                                            <p class="mb-1">List of folders is placing vertical and view is divided by
+                                                three columns</p>
                                             <small class="text-muted">Click to change</small>
                                         </a>
                                         <a href="#" class="list-group-item list-group-item-action">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">Modal</h5>
                                             </div>
-                                            <p class="mb-1">List of folders is placing vertical, each message is like list element, and view of message is like a modal</p>
+                                            <p class="mb-1">List of folders is placing vertical, each message is like
+                                                list element, and view of message is like a modal</p>
                                             <small class="text-muted">Click to change</small>
                                         </a>
                                     </div>
@@ -285,7 +309,8 @@
         </div>
     </div>
 </x-app-layout>
-<div class="modal fade" id="addfolder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="addfolder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -298,21 +323,23 @@
                     <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
                     <div class="input-group input-group-sm mb-3" id="folderdiv">
                         <span class="input-group-text" id="inputGroup-sizing-sm">Folder name:</span>
-                        <input type="text" class="form-control" name="mail_folder"  aria-describedby="inputGroup-sizing-sm">
+                        <input type="text" class="form-control" name="mail_folder"
+                               aria-describedby="inputGroup-sizing-sm">
                     </div>
-                </div>
-                               <div class="modal-footer">
+            </div>
+            <div class="modal-footer">
 
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Save</button>
-                                   </form>
+                </form>
             </div>
 
 
         </div>
     </div>
 </div>
-<div class="modal fade" id="deletefolder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="deletefolder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -323,7 +350,7 @@
                 <form action="{{route('mailbox.deletefolder')}}" method="post">
                     @csrf
                     <input type="hidden" value="{{Auth::user()->id}}" name="user_id"/>
-            <h4><label class="badge bg-secondary">Select folder(s) to remove</label></h4>
+                    <h4><label class="badge bg-secondary">Select folder(s) to remove</label></h4>
                     <select class="form-select" multiple aria-label="multiple select example" name="folder[]">
                         @foreach($configuration as $cog)
                             <?php
@@ -332,7 +359,7 @@
 
                             @foreach($folders as $fold)
 
-                                <option value="{{$fold}}" >{{$fold}}</option>
+                                <option value="{{$fold}}">{{$fold}}</option>
 
                             @endforeach
 
@@ -353,7 +380,7 @@
     </div>
 </div>
 <script>
-    $("#alert button").on('click',function() {
-       $("#alert").hide();
+    $("#alert button").on('click', function () {
+        $("#alert").hide();
     });
 </script>

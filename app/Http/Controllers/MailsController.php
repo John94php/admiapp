@@ -18,13 +18,17 @@ class MailsController extends Controller
     public function index()
     {
         $user_id = Auth::id();
-        $mysteryfold = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->get();
-        $inbox = DB::table('mails')->where('mail_folder', '=', 'inbox',)->where('user_id', '=', $user_id)->get();
-        $sent = DB::table('mails')->where('mail_folder', '=', 'sent')->where('user_id', '=', $user_id)->get();
-        $drafts = DB::table('mails')->where('mail_folder', '=', 'drafts')->where('user_id', '=', $user_id)->get();
-        $trash = DB::table('mails')->where('mail_folder', '=', 'trash')->where('user_id', '=', $user_id)->get();
+        $msgcount = DB::table('config')->select('msgcount')->where('us_id','=',$user_id)->get();
+            foreach($msgcount as $count) {
+               $number = $count->msgcount;
+            }
+        $mysteryfold = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->simplepaginate($number);
+        $inbox = DB::table('mails')->where('mail_folder', '=', 'inbox',)->where('user_id', '=', $user_id)->simplepaginate($number);
+        $sent = DB::table('mails')->where('mail_folder', '=', 'sent')->where('user_id', '=', $user_id)->simplepaginate($number);
+        $drafts = DB::table('mails')->where('mail_folder', '=', 'drafts')->where('user_id', '=', $user_id)->simplepaginate($number);
+        $trash = DB::table('mails')->where('mail_folder', '=', 'trash')->where('user_id', '=', $user_id)->simplepaginate($number);
         $configuration = DB::table('config')->join('users', 'users.id', '=', 'config.us_id')->where('users.id', '=', $user_id)->get();
-        return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold]);
+        return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
     }
 
     public function show($id)
@@ -282,7 +286,13 @@ class MailsController extends Controller
     {
 
     }
+        public function msgcount(Request $request) {
+        $msgcount = $request->input('msgcount');
+        $user_id = Auth::user()->id;
+            DB::update('UPDATE config SET msgcount = ? WHERE us_id = ?',[$msgcount,$user_id]);
+            return redirect()->action([MailsController::class, 'index'])->with('success', 'Changed  succesfully');
 
+        }
     public function addfolders(Request $request)
     {
         $folder = $request->input('mail_folder');

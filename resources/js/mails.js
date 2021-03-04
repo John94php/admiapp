@@ -1,5 +1,6 @@
 $(document).ready(function() {
-var i = 1;
+    $("#msgcountBtn").prop("disabled",true);
+    var i = 1;
     $("#addfield").on("click",function() {
 
 
@@ -7,7 +8,15 @@ var i = 1;
             $("#folderdiv").attr('id','folderdiv'+i);
             $("input[name='mail_folder["+i+"']");
         i++;
-})
+});
+    $("#msgcount").on("change",function() {
+       $("#msgcountBtn").prop("disabled",false);
+       let id = $("#msgcount option:selected").val();
+       if(id == 0 ) {
+           $("#msgcountBtn").prop("disabled",true);
+
+       }
+    });
 })
 
 
