@@ -19,6 +19,9 @@ $(document).ready(function () {
       $("#msgcountBtn").prop("disabled", true);
     }
   });
+  $("#alert button").on('click', function () {
+    $("#alert").hide();
+  });
 });
 /******/ })()
 ;

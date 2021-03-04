@@ -6,6 +6,16 @@
     </x-slot>
     @extends('mails.layout')
     <div class="py-12">
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert">
+                <strong><i class="fas fa-thumbs-up"></i></strong> {{$message}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+
+        @endif
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <!-- początek -->
@@ -19,7 +29,7 @@
                             @foreach($configuration as $cog)
                                 <?php    $folders = explode(",", $cog->folders); ?>
                             @foreach($folders as $folder)
-                            <button class="nav-link" id="v-pills-<?=$folder?>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<?=$folder?>" type="button" role="tab" aria-controls="v-pills-<?=$folder?>" aria-selected="false"><i class="fas fa-folder"></i>&nbsp;<?=$folder?></button>
+                            <button class="nav-link" id="v-pills-<?=$folder?>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<?=$folder?>" type="button" role="tab" aria-controls="v-pills-<?=$folder?>" aria-selected="false" style="border:1px solid grey"><i class="fas fa-folder" ></i>&nbsp;<?=$folder?></button>
                             @endforeach
                             @endforeach
                             <hr>
@@ -47,19 +57,101 @@
                                 </table>
                                 {{ $inbox->onEachSide($number)->links() }}
                             </div>
-                            <div class="tab-pane fade" id="v-pills-sent" role="tabpanel" aria-labelledby="v-pills-sent-tab">...</div>
-                            <div class="tab-pane fade" id="v-pills-drafts" role="tabpanel" aria-labelledby="v-pills-drafts-tab">...</div>
-                            <div class="tab-pane fade" id="v-pills-trash" role="tabpanel" aria-labelledby="v-pills-trash-tab">...</div>
+                            <div class="tab-pane fade" id="v-pills-sent" role="tabpanel" aria-labelledby="v-pills-sent-tab">
+                                <table class="table table-condensed" style="width: 800px">
+                                    <thead>
+                                    <th>Title</th>
+                                    <th>To</th>
+                                    <th>Date</th>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($sent as $s)
+                                        <tr >
+                                            <td><a href="{{route('mailbox.show',$s->mail_id)}}">{{$s->mail_title}}</a></td>
+                                            <td>{{$s->mail_recipient}}</td>
+                                            <td>{{$s->created_at}}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $sent->onEachSide($number)->links() }}
+
+                            </div>
+                            <div class="tab-pane fade" id="v-pills-drafts" role="tabpanel" aria-labelledby="v-pills-drafts-tab">
+                                <table class="table table-condensed" style="width: 800px">
+                                    <thead>
+                                    <th>Title</th>
+                                    <th>To</th>
+                                    <th>Date</th>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($drafts as $d)
+                                        <tr >
+                                            <td><a href="{{route('mailbox.show',$d->mail_id)}}">{{$d->mail_title}}</a></td>
+                                            <td>{{$d->mail_recipient}}</td>
+                                            <td>{{$d->created_at}}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $drafts->onEachSide($number)->links() }}
+
+                            </div>
+                            <div class="tab-pane fade" id="v-pills-trash" role="tabpanel" aria-labelledby="v-pills-trash-tab">
+                                <table class="table table-condensed" style="width: 800px">
+                                    <thead>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($trash as $t)
+                                        <tr >
+                                            <td><a href="{{route('mailbox.show',$t->mail_id)}}">{{$t->mail_title}}</a></td>
+                                            <td>{{$t->mail_recipient}}</td>
+                                            <td>{{$t->created_at}}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $trash->onEachSide($number)->links() }}
+
+
+                            </div>
                             @foreach($configuration as $cog)
                                 <?php $folders = explode(",", $cog->folders);  ?>
                             @foreach($folders as $folder)
                                 @if(!empty($folder))
-                            <div class="tab-pane fade" id="v-pills-<?=$folder?>" role="tabpanel" aria-labelledby="v-pills-<?=$folder?>-tab">
-                                <?=$folder ?>
+                            <div class="tab-pane fade" id="v-pills-<?=$folder?>" role="tabpanel" aria-labelledby="v-pills-<?=$folder?>-tab" >
+                                <?php  $newbox = DB::table('mails')->where('mail_folder', '=', $folder)->get();?>
+                                <table class="table table-condensed" style="width:800px;">
+                                    <thead>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($newbox as $box)
+                                        <tr>
+
+                                            <td>
+                                                <a href="{{route('mailbox.show',$box->mail_id)}}">{{$box->mail_title}}</a>
+                                            </td>
+                                            <td>{{$box->created_at}}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                    {{ $mysteryfold->onEachSide($number)->links() }}
                             </div>
                                 @endif
                                 @endforeach
                                 @endforeach
+                            <div class="tab-pane fade" id="v-pills-config" role="tabpanel" aria-labelledby="v-pills-config-tab">
+                                <legend class="badge bg-primary">Config for account {{Auth::user()->email}}</legend>
+                            </div>
+
+
+
+
                         </div>
                     </div>
 

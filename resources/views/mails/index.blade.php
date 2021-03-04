@@ -375,8 +375,3 @@
         </div>
     </div>
 </div>
-<script>
-    $("#alert button").on('click', function () {
-        $("#alert").hide();
-    });
-</script>
