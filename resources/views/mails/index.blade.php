@@ -113,11 +113,7 @@
                                     <td><a href="{{route('mailbox.show',$s->mail_id)}}">{{$s->mail_title}}</a></td>
                                     <td>{{$s->mail_recipient}}</td>
                                     <td>{{$s->created_at}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-outline-primary"><i class="fas fa-eye"></i>&nbsp;Show
-                                        </button>
 
-                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -284,7 +280,7 @@
                                                 <h5 class="mb-1">Buisness</h5>
                                             </div>
                                             <p class="mb-1">List of folders is placing vertical and view is divided by
-                                                three columns</p>
+                                                two columns(right view is like table with messagess)</p>
                                             <small class="text-muted">Click to change</small>
                                         </a>
                                         <a href="#" class="list-group-item list-group-item-action">

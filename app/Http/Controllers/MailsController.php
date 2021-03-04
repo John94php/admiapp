@@ -22,13 +22,37 @@ class MailsController extends Controller
             foreach($msgcount as $count) {
                $number = $count->msgcount;
             }
+
         $mysteryfold = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->simplepaginate($number);
         $inbox = DB::table('mails')->where('mail_folder', '=', 'inbox',)->where('user_id', '=', $user_id)->simplepaginate($number);
         $sent = DB::table('mails')->where('mail_folder', '=', 'sent')->where('user_id', '=', $user_id)->simplepaginate($number);
         $drafts = DB::table('mails')->where('mail_folder', '=', 'drafts')->where('user_id', '=', $user_id)->simplepaginate($number);
         $trash = DB::table('mails')->where('mail_folder', '=', 'trash')->where('user_id', '=', $user_id)->simplepaginate($number);
         $configuration = DB::table('config')->join('users', 'users.id', '=', 'config.us_id')->where('users.id', '=', $user_id)->get();
-        return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+        $folderview = DB::table('config')->select('mailboxview')->where('us_id','=',$user_id)->get();
+        foreach($folderview as $fview) {
+            $view = $fview->mailboxview;
+        }
+        switch($view) {
+            case 'compact':
+                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+            break;
+            case 'buisness':
+                return view('mails.buisness', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+
+                break;
+            case 'modal':
+
+                break;
+            default:
+                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+
+                break;
+        }
+
+
+
+
     }
 
     public function show($id)
