@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MailsController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
@@ -32,5 +33,7 @@ Route::post('forward/{id}',[MailsController::class,'forward'])->name('mailbox.fo
 Route::post('addfolders',[MailsController::class,'addfolders'])->name('mailbox.addfolders');
 Route::post('deletefolder',[MailsController::class,'deletefolder'])->name('mailbox.deletefolder');
 Route::post('msgcount',[MailsController::class,'msgcount'])->name('mailbox.msgcount');
+Route::post('changelayout',[MailsController::class,'changelayout'])->name('mailbox.changelayout');
 Route::resource('mailbox',MailsController::class);
 
+Route::resource('documents',DocumentController::class);

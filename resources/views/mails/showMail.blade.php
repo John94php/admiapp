@@ -52,8 +52,9 @@
                                     </li>
                             @endfor
                         </ul>
+                        </form>
+
                     </div>
-                </form>
                     <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#replyModal" data-id="{{$s->mail_id}}"><i class="fas fa-reply"></i>&nbsp;Reply</button>
                     <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#forwardModal" data-id="{{$s->mail_id}}"><i class="fas fa-forward"></i>&nbsp;Forward to</button>
 

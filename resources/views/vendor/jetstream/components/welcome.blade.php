@@ -56,7 +56,7 @@
         <div class="flex items-center">
             <i class="fas fa-file-signature"></i>
             <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a
-                    href="https://tailwindcss.com/">Documents</a></div>
+                    href="{{route('documents.index')}}">Documents</a></div>
         </div>
 
         <div class="ml-12">

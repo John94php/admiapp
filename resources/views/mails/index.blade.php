@@ -238,10 +238,10 @@
                                         @endforeach
                                     </ul>
                                     <button class="btn btn-sm btn-outline-success" style="margin : 10px"
-                                            data-bs-toggle="modal" data-bs-target="#addfolder">Add folder(s)
+                                            data-bs-toggle="modal" data-bs-target="#addfolder">Add folder
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" style="margin : 10px"
-                                            data-bs-toggle="modal" data-bs-target="#deletefolder">Delete folder(s)
+                                            data-bs-toggle="modal" data-bs-target="#deletefolder">Delete folder
                                     </button>
 
                                 </td>
@@ -264,34 +264,40 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Layout</td>
+                                <td>Layout <badge class="badge bg-blue-900">{{$view}}</badge></td>
                                 <td>
+
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active"
+
+                                        <form action="{{route('mailbox.changelayout')}}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
+                                        <button type="submit" class="list-group-item list-group-item-action "
                                            aria-current="true">
                                             <div class="d-flex w-100 justify-content-between">
-                                                <h5 class="mb-1">Compact</h5>
+                                                <h5 class="mb-1" >Compact</h5>
+                                            <input type="hidden" name="layout" value="compact"/>
                                             </div>
                                             <p class="mb-1">Default view.</p>
                                             <small>Click to change</small>
-                                        </a>
-                                        <a href="#" class="list-group-item list-group-item-action">
+                                        </button>
+                                        </form>
+                                        <form action="{{route('mailbox.changelayout')}}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="user_id" value="{{Auth::user()->id}}"/>
+                                        <button type="submit" class="list-group-item list-group-item-action ">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">Buisness</h5>
+                                                <input type="hidden" name="layout" value="buisness"/>
                                             </div>
                                             <p class="mb-1">List of folders is placing vertical and view is divided by
                                                 two columns(right view is like table with messagess)</p>
                                             <small class="text-muted">Click to change</small>
-                                        </a>
-                                        <a href="#" class="list-group-item list-group-item-action">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <h5 class="mb-1">Modal</h5>
-                                            </div>
-                                            <p class="mb-1">List of folders is placing vertical, each message is like
-                                                list element, and view of message is like a modal</p>
-                                            <small class="text-muted">Click to change</small>
-                                        </a>
+                                        </button>
+                                        </form>
+
                                     </div>
+
                                 </td>
                             </tr>
                         </table>
@@ -310,7 +316,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Add folder(s)</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Add folder</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -339,15 +345,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Delete folder(s)</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Delete folder</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="{{route('mailbox.deletefolder')}}" method="post">
                     @csrf
                     <input type="hidden" value="{{Auth::user()->id}}" name="user_id"/>
-                    <h4><label class="badge bg-secondary">Select folder(s) to remove</label></h4>
-                    <select class="form-select" multiple aria-label="multiple select example" name="folder[]">
+                    <h4><label class="badge bg-secondary">Select folder to remove</label></h4>
+                    <select class="form-select"  aria-label="multiple select example" name="folder[]">
                         @foreach($configuration as $cog)
                             <?php
                             $folders = explode(",", $cog->folders);

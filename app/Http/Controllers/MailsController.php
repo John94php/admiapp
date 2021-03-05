@@ -35,24 +35,18 @@ class MailsController extends Controller
         }
         switch($view) {
             case 'compact':
-                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number,'view'=>$view]);
             break;
             case 'buisness':
-                return view('mails.buisness', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+                return view('mails.buisness', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number,'view'=>$view]);
 
                 break;
-            case 'modal':
 
-                break;
             default:
-                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number]);
+                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number,'view'=>$view]);
 
                 break;
         }
-
-
-
-
     }
 
     public function show($id)
@@ -66,6 +60,7 @@ class MailsController extends Controller
         $showcog = DB::table('config')->join('mails', 'mails.user_id', '=', 'config.us_id')->where('user_id', '=', $user_id)->get();
 
         return view('mails.showMail', ['show' => $show, 'showcog' => $showcog, 'users' => $users]);
+
     }
 
     public function create()
@@ -225,7 +220,12 @@ class MailsController extends Controller
         }
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
     }
-
+public function changelayout(Request $request) {
+            $user_id = $request->input('user_id');
+            $layout = $request->input('layout');
+            DB::update('UPDATE config SET mailboxview =? WHERE us_id = ?',[$layout,$user_id]);
+    return redirect()->action([MailsController::class, 'index']);
+    }
     public function reply(Request $request)
     {
 
