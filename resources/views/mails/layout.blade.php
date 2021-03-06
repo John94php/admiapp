@@ -9,7 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/5629bafd13.js" crossorigin="anonymous"></script>
     <meta name="_token" content="{!! csrf_token() !!}" />
-    <script type="text/javascript" src="{{ URL::asset('js/mails.js') }}"></script></head>
+    <script type="text/javascript" src="{{ URL::asset('js/mails.js') }}"></script>
+</head>
 <body>
 
 

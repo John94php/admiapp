@@ -20,6 +20,10 @@ class DocumentController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('documents.index');
+        $types = DB::table('docslo')->get();
+        return view('documents.index',['types'=>$types]);
+    }
+    public function store() {
+        var_dump($_POST);
     }
 }

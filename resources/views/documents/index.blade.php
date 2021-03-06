@@ -4,11 +4,12 @@
             {{ __('Documents') }}
         </h2>
     </x-slot>
-@extends('documents.layout')
+    @extends('documents.layout')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <button type="button" onclick="openModal()" class="focus:outline-none text-red-600 text-sm py-2.5 px-5 rounded-md hover:bg-red-100" ><i class="fas fa-plus"></i><br/>Add new document</button>
+                <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white m-5 show-modal" id="newdocBtn">show modal</button>
+
                 <table class="min-w-full leading-normal " id="documentsTable">
                     <thead>
                     <tr class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -29,114 +30,82 @@
         </div>
     </div>
 </x-app-layout>
-<script type="text/javascript">
-$(function() {
-   var table = $("#documentsTable").DataTable({
-       processing:true,
-       serverSide:true,
-       ajax: "{{route('documents.index')}}",
-       columns: [
-           {data:'DT_RowIndex',name:'DT_RowIndex'},
-           {data:'title',name:'title'},
-           {data:'type',name:'type'},
-           {data:'size',name:'size'},
-           {data:'path',name:'path'},
-           {data:'us_id',name:'us_id'},
-           {
-               data: 'action',
-               name: 'action',
-               orderable: true,
-               searchable: true
-           },
-       ]
-   });
-});
-</script>
-<div class="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
-     style="background: rgba(0,0,0,.7);">
-    <div
-        class="border border-teal-500 shadow-lg modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-        <div class="modal-content py-4 text-left px-6">
-            <!--Title-->
-            <div class="flex justify-between items-center pb-3">
-                <p class="text-2xl font-bold">Add new document</p>
-                <div class="modal-close cursor-pointer z-50">
-                    <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                         viewBox="0 0 18 18">
-                        <path
-                            d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z">
-                        </path>
-                    </svg>
-                </div>
-            </div>
-            <!--Body-->
-            <div class="my-5">
-            <form action="" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+<div class="modal h-screen w-full fixed left-0 top-0 flex justify-center items-center bg-black bg-opacity-50 hidden">
+    <!-- modal -->
+    <div class="bg-white rounded shadow-lg w-1/3">
+        <!-- modal header -->
+        <div class="border-b px-4 py-2 flex justify-between items-center">
+            <h3 class="font-semibold text-lg">Add new document</h3>
+            <button class="text-black close-modal">&cross;</button>
+        </div>
+        <!-- modal body -->
+        <div class="p-3">
+            <form action="{{route('documents.store')}}" method="POST" >
                 @csrf
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                        Name
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        name="name" id="name" type="text" placeholder="Dowód osobisty" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                Type
-                    </label>
-                <select name="type" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <option>Dowód osobisty</option>
-                    <option>Faktura VAT</option>
-                    <option>add new type</option>
+                <label for="docname" class="block text-black">Name </label>
+                <input type="text" autofocus id="docname" class="rounded-sm px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" name="docname" placeholder="custom name of document" />
+                <label for="doctype" class="block text-black">Type</label>
+                <select name="doctype" id="doctype" class="rounded-sm px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full">
+                @foreach($types as $type)
+                    <option value="{{$type->id}}">{{$type->name}}</option>
+                    @endforeach
                 </select>
+                <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white m-4" type="button" id="newtypeBtn"><i class="fas fa-plus"></i>&nbsp;define new</button>
+                <div id="newtypediv" style="display: none">
+                    <label for="docname" class="block text-black">Type name </label>
+                    <input type="text" autofocus id="docname" class="rounded-sm px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" name="docname" placeholder="custom name of type" />
+
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="file">File</label>
-                    <input type="file" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div class="flex justify-end items-center w-100 border-t p-3">
+                    <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white" type="submit">Submit</button>
                 </div>
             </form>
+            <button class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white mr-1 close-modal">Cancel</button>
 
-            </div>
-            <!--Footer-->
-            <div class="flex justify-end pt-2">
-                <button
-                    class="focus:outline-none modal-close px-4 bg-gray-400 p-3 rounded-lg text-black hover:bg-gray-300">Cancel</button>
-                <button
-                    class="focus:outline-none px-4 bg-teal-500 p-3 ml-3 rounded-lg text-white hover:bg-teal-400">Confirm</button>
-            </div>
         </div>
+
     </div>
 </div>
 
-<script>
-    const modal = document.querySelector('.main-modal');
-    const closeButton = document.querySelectorAll('.modal-close');
 
-    const modalClose = () => {
-        modal.classList.remove('fadeIn');
-        modal.classList.add('fadeOut');
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 500);
-    }
+<script type="text/javascript">
+    $(function () {
+        var table = $("#documentsTable").DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{route('documents.index')}}",
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'title', name: 'title'},
+                {data: 'type', name: 'type'},
+                {data: 'size', name: 'size'},
+                {data: 'path', name: 'path'},
+                {data: 'us_id', name: 'us_id'},
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: true
+                },
+            ]
+        });
+    });
 
-    const openModal = () => {
-        modal.classList.remove('fadeOut');
-        modal.classList.add('fadeIn');
-        modal.style.display = 'flex';
-    }
+    //modal
+    const modal = document.querySelector('.modal');
 
-    for (let i = 0; i < closeButton.length; i++) {
+    const showModal = document.querySelector('.show-modal');
+    const closeModal = document.querySelectorAll('.close-modal');
 
-        const elements = closeButton[i];
+    showModal.addEventListener('click', function (){
+        modal.classList.remove('hidden')
+    });
 
-        elements.onclick = (e) => modalClose();
-
-        modal.style.display = 'none';
-
-        window.onclick = function (event) {
-            if (event.target == modal) modalClose();
-        }
-    }
+    closeModal.forEach(close => {
+        close.addEventListener('click', function (){
+            modal.classList.add('hidden')
+        });
+    });
 </script>
+
+

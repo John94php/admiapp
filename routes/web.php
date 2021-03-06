@@ -35,5 +35,5 @@ Route::post('deletefolder',[MailsController::class,'deletefolder'])->name('mailb
 Route::post('msgcount',[MailsController::class,'msgcount'])->name('mailbox.msgcount');
 Route::post('changelayout',[MailsController::class,'changelayout'])->name('mailbox.changelayout');
 Route::resource('mailbox',MailsController::class);
-
+Route::post('adddocument',[DocumentController::class,'adddocument'])->name('documents.adddocument');
 Route::resource('documents',DocumentController::class);

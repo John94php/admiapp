@@ -18,7 +18,7 @@ mix.js('resources/js/app.js', 'public/js')
         require('autoprefixer'),
     ]);
  mix.js('resources/js/mails.js', 'public/js');
-
+mix.js('resources/js/documents.js', 'public/js');
 if (mix.inProduction()) {
     mix.version();
 }
