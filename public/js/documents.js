@@ -8,6 +8,15 @@ $(document).ready(function () {
     $("label[for='doctype']").hide();
     $("#newtypediv").show();
     $("#newtypeBtn").hide();
+    $("select[name='type']").prop("disabled", true);
+  });
+  $("#deletedocForm").on("submit", function () {
+    Swal.fire({
+      title: 'Success!',
+      text: 'document deleted successfully',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
   });
   var modal = document.querySelector('.modal');
   var showModal = document.querySelector('.show-modal');

@@ -11,15 +11,14 @@ use Illuminate\Support\Facades\Storage;
 class DocumentController extends Controller
 {
     public function index(Request $request) {
-//        $documents = DB::table('documents')->get();
-        $documents = DB::table('documents')->join('users','users.id','=','documents.us_id')->get();
-        foreach($documents as $doc ){
-            echo '<pre>';
-            var_dump($doc);
-            echo '</pre>';
-        }
+
+
+        $documents = DB::table('documents')->join('users','users.id','=','documents.us_id')->select('users.name','documents.title','documents.size','documents.type','documents.id','documents.us_id')->where('status','=',1)->get();
+        $archives = DB::table('documents')->join('users','users.id','=','documents.us_id')->select('users.name','documents.title','documents.size','documents.type','documents.id','documents.us_id','documents.updated_at')->where('status','=',2)->get();
+
+
         $types = DB::table('docslo')->get();
-        return view('documents.index',['documents'=>$documents,'types'=>$types]);
+        return view('documents.index',['documents'=>$documents,'types'=>$types,'archives'=>$archives]);
     }
     public function store(Request $request) {
         $user = Auth::user()->name;
@@ -46,19 +45,23 @@ class DocumentController extends Controller
                     'type' =>$list,
                     'size' =>$_FILES['filedoc']["size"],
                     'path' =>$path,
-                    'users' =>$user_id,
+                    'us_id' =>$user_id,
                     'created_at' =>date('Y-m-d H:i:s'),
-                    'ext' =>$ext
+                    'ext' =>$ext,
+                    'status' =>1
                 ]);
-            } else if($typename) {
+            }
+         if($typename) {
                 DB::table('documents')->insert([
                     'title'=>$filename,
-                    'type' =>$list,
+                    'type' =>$typename,
                     'size' =>$_FILES['filedoc']["size"],
-                    'users' =>$user_id,
+                    'us_id' =>$user_id,
                     'path' =>$path,
                     'created_at' =>date('Y-m-d H:i:s'),
-                    'ext' =>$ext
+                    'ext' =>$ext,
+                    'status' =>1
+
                 ]);
 
             }
@@ -66,9 +69,18 @@ class DocumentController extends Controller
       return redirect()->action([DocumentController::class, 'index'])->with('success', 'Success');
 
     }
-    public function get_file($file,$user)
+    public function get_file($user,$file)
     {
 
         return response()->download(storage_path("app\\documents\\{$user}\\{$file}"));
+    }
+    public function edit() {
+
+    }
+    public function deletedoc($id,$file)
+    {
+            DB::table('documents')->where('id',$id)->update(['status'=>2,'updated_at'=>date('Y-m-d H:i:s')]);
+        return redirect()->action([DocumentController::class, 'index']);
+
     }
 }

@@ -36,5 +36,6 @@ Route::post('msgcount',[MailsController::class,'msgcount'])->name('mailbox.msgco
 Route::post('changelayout',[MailsController::class,'changelayout'])->name('mailbox.changelayout');
 Route::resource('mailbox',MailsController::class);
 Route::post('adddocument',[DocumentController::class,'adddocument'])->name('documents.adddocument');
-Route::get('/download/{file}',[DocumentController::class,'get_file'])->name('documents.get_path');
+Route::get('/download/{user}/{file}',[DocumentController::class,'get_file'])->name('documents.get_path');
+Route::delete('deletedoc/{id}/{file}',[DocumentController::class,'deletedoc'])->name('documents.deletedoc');
 Route::resource('documents',DocumentController::class);
