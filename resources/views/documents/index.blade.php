@@ -8,7 +8,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white m-5 show-modal" id="newdocBtn">show modal</button>
+                <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white m-5 show-modal"
+                        id="newdocBtn"><i class="fas fa-plus"></i>&nbsp;add new
+                </button>
 
                 <table class="min-w-full leading-normal " id="documentsTable">
                     <thead>
@@ -19,11 +21,21 @@
                         <th>Size</th>
                         <th>download</th>
                         <th>assigned to</th>
-                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach($documents as $doc)
 
+                        <tr>
+                            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">{{$doc->id}}</td>
+                            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">{{$doc->title}}</td>
+                            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">{{$doc->type}}</td>
+                            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">{{$doc->size}}</td>
+                            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static"><a href="download/{{$doc->users}}/{{$doc->title}}">Download</a></td>
+                            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">{{$doc->users}}</td>
+
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -40,28 +52,54 @@
         </div>
         <!-- modal body -->
         <div class="p-3">
-            <form action="{{route('documents.store')}}" method="POST" >
+            <form action="{{route('documents.store')}}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <label for="docname" class="block text-black">Name </label>
-                <input type="text" autofocus id="docname" class="rounded-sm px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" name="docname" placeholder="custom name of document" />
-                <label for="doctype" class="block text-black">Type</label>
-                <select name="doctype" id="doctype" class="rounded-sm px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full">
-                @foreach($types as $type)
-                    <option value="{{$type->id}}">{{$type->name}}</option>
-                    @endforeach
-                </select>
-                <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white m-4" type="button" id="newtypeBtn"><i class="fas fa-plus"></i>&nbsp;define new</button>
-                <div id="newtypediv" style="display: none">
-                    <label for="docname" class="block text-black">Type name </label>
-                    <input type="text" autofocus id="docname" class="rounded-sm px-4 py-3 mt-3 focus:outline-none bg-gray-100 w-full" name="docname" placeholder="custom name of type" />
+                <table class="table table-condensed">
+                    <tr>
+                        <td><label for="name">Name</label></td>
+                        <td>
+                            <label>
+                                <input type="text" name="name"/>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr id="doctype">
+                        <td><label for="type">Type</label></td>
+                        <td>
+                            <label>
+                                <select name="type">
+                                    @foreach($types as $type)
+                                        <option value="{{$type->id}}">{{$type->name}}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>or add new type </td>
+                        <td><button type="button" id="newtypeBtn" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white" ><i class="fas fa-plus"></i>&nbsp;add new </button> </td>
+                    </tr>
+                    <tr id="newtypediv" style="display: none">
+                        <td>Type name</td>
+                        <td>
+                            <label>
+                                <input type="text" name="typename">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>File</label></td>
+                        <td><input type="file" name="filedoc"/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td> <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white" type="submit">Submit</button></td>
+                    </tr>
 
-                </div>
-                <div class="flex justify-end items-center w-100 border-t p-3">
-                    <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white" type="submit">Submit</button>
-                </div>
+                </table>
+
             </form>
             <button class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white mr-1 close-modal">Cancel</button>
-
         </div>
 
     </div>
@@ -69,43 +107,9 @@
 
 
 <script type="text/javascript">
-    $(function () {
-        var table = $("#documentsTable").DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{route('documents.index')}}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'title', name: 'title'},
-                {data: 'type', name: 'type'},
-                {data: 'size', name: 'size'},
-                {data: 'path', name: 'path'},
-                {data: 'us_id', name: 'us_id'},
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: true,
-                    searchable: true
-                },
-            ]
-        });
-    });
 
     //modal
-    const modal = document.querySelector('.modal');
 
-    const showModal = document.querySelector('.show-modal');
-    const closeModal = document.querySelectorAll('.close-modal');
-
-    showModal.addEventListener('click', function (){
-        modal.classList.remove('hidden')
-    });
-
-    closeModal.forEach(close => {
-        close.addEventListener('click', function (){
-            modal.classList.add('hidden')
-        });
-    });
 </script>
 
 

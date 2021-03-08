@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 session_start();
 
 
-use App\Models\User;
+
 use Illuminate\Http\Request;
-use App\Models\Mails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Console\Input\Input;
+
 
 
 class MailsController extends Controller
@@ -18,10 +16,10 @@ class MailsController extends Controller
     public function index()
     {
         $user_id = Auth::id();
-        $msgcount = DB::table('config')->select('msgcount')->where('us_id','=',$user_id)->get();
-            foreach($msgcount as $count) {
-               $number = $count->msgcount;
-            }
+        $msgcount = DB::table('config')->select('msgcount')->where('us_id', '=', $user_id)->get();
+        foreach ($msgcount as $count) {
+            $number = $count->msgcount;
+        }
 
         $mysteryfold = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->simplepaginate($number);
         $inbox = DB::table('mails')->where('mail_folder', '=', 'inbox',)->where('user_id', '=', $user_id)->simplepaginate($number);
@@ -29,21 +27,20 @@ class MailsController extends Controller
         $drafts = DB::table('mails')->where('mail_folder', '=', 'drafts')->where('user_id', '=', $user_id)->simplepaginate($number);
         $trash = DB::table('mails')->where('mail_folder', '=', 'trash')->where('user_id', '=', $user_id)->simplepaginate($number);
         $configuration = DB::table('config')->join('users', 'users.id', '=', 'config.us_id')->where('users.id', '=', $user_id)->get();
-        $folderview = DB::table('config')->select('mailboxview')->where('us_id','=',$user_id)->get();
-        foreach($folderview as $fview) {
+        $folderview = DB::table('config')->select('mailboxview')->where('us_id', '=', $user_id)->get();
+        foreach ($folderview as $fview) {
             $view = $fview->mailboxview;
         }
-        switch($view) {
+        switch ($view) {
             case 'compact':
-                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number,'view'=>$view]);
-            break;
+                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold, 'number' => $number, 'view' => $view]);
+                break;
             case 'buisness':
-                return view('mails.buisness', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number,'view'=>$view]);
-
+                return view('mails.buisness', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold, 'number' => $number, 'view' => $view]);
                 break;
 
             default:
-                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold,'number'=>$number,'view'=>$view]);
+                return view('mails.index', ['inbox' => $inbox, 'sent' => $sent, 'drafts' => $drafts, 'trash' => $trash, 'configuration' => $configuration, 'mysteryfold' => $mysteryfold, 'number' => $number, 'view' => $view]);
 
                 break;
         }
@@ -51,7 +48,7 @@ class MailsController extends Controller
 
     public function show($id)
     {
-        $user_id = Auth::user()->id;
+        $user_id = Auth::id();
         $name = Auth::user()->name;
         $email = Auth::user()->email;
         $users = DB::select('SELECT name,email FROM users WHERE name != ? AND email !=?', [$name, $email]);
@@ -126,7 +123,7 @@ class MailsController extends Controller
             ]);
             DB::table('mails')->insert([
                 'mail_sender' => $mail_sender,
-                'mail_recipient' => $mail_recipient,
+                'mail_recipient' => $dw,
                 'mail_title' => $mail_title,
                 'mail_body' => $mail_body,
                 'mail_dw' => $dw,
@@ -166,7 +163,7 @@ class MailsController extends Controller
             ]);
             DB::table('mails')->insert([
                 'mail_sender' => $mail_sender,
-                'mail_recipient' => $mail_recipient,
+                'mail_recipient' => $dw,
                 'mail_title' => $mail_title,
                 'mail_body' => $mail_body,
                 'mail_dw' => $dw,
@@ -179,7 +176,7 @@ class MailsController extends Controller
             ]);
             DB::table('mails')->insert([
                 'mail_sender' => $mail_sender,
-                'mail_recipient' => $mail_recipient,
+                'mail_recipient' => $udw,
                 'mail_title' => $mail_title,
                 'mail_body' => $mail_body,
                 'mail_dw' => $dw,
@@ -220,12 +217,15 @@ class MailsController extends Controller
         }
         return redirect()->action([MailsController::class, 'index'])->with('success', 'Message sent successfully');
     }
-public function changelayout(Request $request) {
-            $user_id = $request->input('user_id');
-            $layout = $request->input('layout');
-            DB::update('UPDATE config SET mailboxview =? WHERE us_id = ?',[$layout,$user_id]);
-    return redirect()->action([MailsController::class, 'index']);
+
+    public function changelayout(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $layout = $request->input('layout');
+        DB::update('UPDATE config SET mailboxview =? WHERE us_id = ?', [$layout, $user_id]);
+        return redirect()->action([MailsController::class, 'index']);
     }
+
     public function reply(Request $request)
     {
 
@@ -310,13 +310,16 @@ public function changelayout(Request $request) {
     {
 
     }
-        public function msgcount(Request $request) {
+
+    public function msgcount(Request $request)
+    {
         $msgcount = $request->input('msgcount');
         $user_id = Auth::user()->id;
-            DB::update('UPDATE config SET msgcount = ? WHERE us_id = ?',[$msgcount,$user_id]);
-            return redirect()->action([MailsController::class, 'index'])->with('success', 'Changed  succesfully');
+        DB::update('UPDATE config SET msgcount = ? WHERE us_id = ?', [$msgcount, $user_id]);
+        return redirect()->action([MailsController::class, 'index'])->with('success', 'Changed  succesfully');
 
-        }
+    }
+
     public function addfolders(Request $request)
     {
         $folder = $request->input('mail_folder');
@@ -332,32 +335,35 @@ public function changelayout(Request $request) {
         DB::update('UPDATE config SET folders = ? WHERE us_id = ? ', [$newArray, $user_id]);
         return redirect()->action([MailsController::class, 'index'])->with('success', 'List of folders updated succesfully');
     }
-        public function deletefolder(Request $request) {
+
+    public function deletefolder(Request $request)
+    {
         $user_id = $request->input('user_id');
         $list = DB::table('config')->select('folders')->where('us_id', '=', $user_id)->get();
         $foldertodelete = $_POST["folder"];
-            foreach($list as $l) {
-               $newlist =  explode(',',$l->folders);
-            }
-                foreach($foldertodelete as $folder) {
-                if(in_array($folder,$newlist)) {
-                   $flipped =  array_flip($newlist);
-                    unset($flipped[$folder]);
-                    $newarray = array_flip($flipped);
-                    $flippedstring = implode(',',$newarray);
-                    DB::update('UPDATE config SET folders=? WHERE us_id = ?',[$flippedstring,$user_id]);
-                    if(empty($flipped)) {
-                        DB::update('UPDATE config SET folders =  null WHERE id = ?',[$user_id]);
-                    }
-                } else {
-                    echo "Nie ok";
+        foreach ($list as $l) {
+            $newlist = explode(',', $l->folders);
+        }
+        foreach ($foldertodelete as $folder) {
+            if (in_array($folder, $newlist)) {
+                $flipped = array_flip($newlist);
+                unset($flipped[$folder]);
+                $newarray = array_flip($flipped);
+                $flippedstring = implode(',', $newarray);
+                DB::update('UPDATE config SET folders=? WHERE us_id = ?', [$flippedstring, $user_id]);
+                if (empty($flipped)) {
+                    DB::update('UPDATE config SET folders =  null WHERE id = ?', [$user_id]);
                 }
-
+            } else {
+                echo "Nie ok";
             }
-    return redirect()->action([MailsController::class, 'index'])->with('success', 'List of folders updated succesfully');
-
 
         }
+        return redirect()->action([MailsController::class, 'index'])->with('success', 'List of folders updated succesfully');
+
+
+    }
+
     public function moveToTrash($id)
     {
         DB::update('UPDATE mails SET mail_folder="trash" WHERE mail_id = ?', [$id]);
