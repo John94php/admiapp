@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MailsController;
 use App\Http\Controllers\NewsController;
@@ -39,3 +40,4 @@ Route::post('adddocument',[DocumentController::class,'adddocument'])->name('docu
 Route::get('/download/{user}/{file}',[DocumentController::class,'get_file'])->name('documents.get_path');
 Route::delete('deletedoc/{id}/{file}',[DocumentController::class,'deletedoc'])->name('documents.deletedoc');
 Route::resource('documents',DocumentController::class);
+Route::resource('contracts',ContractController::class);

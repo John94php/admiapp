@@ -2,5 +2,7 @@
     "/js/app.js": "/js/app.js",
     "/js/mails.js": "/js/mails.js",
     "/js/documents.js": "/js/documents.js",
+    "/js/contracts.js": "/js/contracts.js",
+    "/css/contracts.css": "/css/contracts.css",
     "/css/app.css": "/css/app.css"
 }

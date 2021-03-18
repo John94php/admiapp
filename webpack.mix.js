@@ -19,6 +19,9 @@ mix.js('resources/js/app.js', 'public/js')
     ]);
  mix.js('resources/js/mails.js', 'public/js');
 mix.js('resources/js/documents.js', 'public/js');
+mix.js('resources/js/contracts.js','public/js')
+    .postCss('resources/css/contracts.css','public/css');
+
 if (mix.inProduction()) {
     mix.version();
 }

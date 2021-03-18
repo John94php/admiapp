@@ -70,7 +70,9 @@
         <div class="flex items-center">
 
             <i class="fas fa-file-contract"></i>
-            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">Contracts</div>
+            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">
+                <a href="{{route('contracts.index')}}">Contracts</a>
+            </div>
         </div>
 
         <div class="ml-12">
