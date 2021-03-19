@@ -27,10 +27,12 @@ class CreateContractsTable extends Migration
             $table->string('corrcountry',255);
             $table->string('corrstate',255);
             $table->string('corrcity',255);
+            $table->string('corrstreet',255);
             $table->string('corrhouse');
             $table->string('corrflat');
             $table->string('code',6);
             $table->string('country',255);
+            $table->string('state',255);
             $table->string('city',255);
             $table->string('street',255);
             $table->string('house');

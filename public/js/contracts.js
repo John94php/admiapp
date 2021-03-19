@@ -13,25 +13,19 @@ closeModal.forEach(function (close) {
     modal.classList.add('hidden');
   });
 });
-$("#choice").on("change", function () {
-  var choosen = $("#choice option:selected").val();
-
-  switch (choosen) {
-    case '1':
-      $("#pesel").show();
-      $("#nopesel").hide();
-      break;
-
-    case '2':
-      $("#pesel").hide();
-      $("#nopesel").show();
-      break;
-
-    default:
-      $("#pesel").hide();
-      $("#nopesel").hide();
-      break;
-  }
+$("#copyaddress").on("change", function () {
+  var state = $("#corrstate").val();
+  var city = $("#corrcity").val();
+  var code = $("#corrcode").val();
+  var street = $("#corrstreet").val();
+  var house = $("#corrhouse").val();
+  var flat = $("#corrflat").val();
+  $("#state").val(state);
+  $("#city").val(city);
+  $("#code").val(code);
+  $("#street").val(street);
+  $("#house").val(house);
+  $("#flat").val(flat);
 });
 /******/ })()
 ;

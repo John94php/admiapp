@@ -2,13 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Models\Contract;
 class ContractForm extends Component
 {
     public $name;
     public $lastname;
-    public $datebirth;
+    public $dateofbirth;
     public $pesel;
     public $sex;
     public $idcard;
@@ -28,37 +30,62 @@ class ContractForm extends Component
     public $street;
     public $house;
     public $flat;
-
+protected $rules = [
+    'name' =>'required',
+    'lastname'=>'required',
+    'sex'=>'required',
+    'idcard' => 'required',
+    'contracttype' => 'required',
+    'contractdate' => 'required',
+    'corrcode' => 'required',
+    'corrcountry' => 'required',
+    'corrstate' =>'required',
+    'corrcity' =>'required',
+    'corrstreet'=>'required',
+    'corrhouse'=>'required',
+    'corrflat' =>'required',
+    'code' =>'required',
+    'country'=>'required',
+    'street'=>'required',
+    'state' =>'required',
+    'city' => 'required',
+    'house'=>'required',
+    'flat'=>'required'
+];
     public function submit()
     {
-    $data = $this->validate([
-       'name'=>'required|min:2',
-        'lastname'=>'required',
-        'pesel' =>'|min:9,max:9',
-        'dateofbirth',
-        'sex',
-        'idcard' =>'|min:9,max:9',
-        'contracttype'=>'required',
-        'contractdate'=>'required',
-        'corrcode' => 'required',
-        'corrcountry' =>'required',
-        'corrstate'=>'required',
-        'corrcity' => 'required',
-        'corrhouse' => 'required',
-        'corrflat' => 'required',
-        'code' => 'required',
-        'country' => 'required',
-        'state'=>'required',
-        'city' => 'required',
-        'street' => 'required',
-        'house'=>'required',
-        'flat'=>'required'
-    ]);
-    Contract::create($data);
-    return redirect()->to('contract');
+
+     $this->validate();
+     Contract::create([
+         'name'=>$this->name,
+         'lastname' =>$this->lastname,
+         'dateofbirth' =>$this->dateofbirth,
+         'pesel' =>$this->pesel,
+         'sex' =>$this->sex,
+         'idcard' =>$this->idcard,
+         'contracttype' =>$this->contracttype,
+         'contractdate' =>$this->contractdate,
+         'corrcode' =>$this->corrcode,
+         'corrcountry' =>$this->corrcountry,
+         'corrstate' =>$this->corrstate,
+         'corrcity'=>$this->corrcity,
+         'corrstreet' =>$this->corrstreet,
+         'corrhouse'=>$this->corrhouse,
+         'corrflat'=> $this->corrflat,
+         'code'=>$this->code,
+         'country' =>$this->country,
+         'state'=>$this->state,
+         'city' =>$this->city,
+         'street'=>$this->street,
+         'house'=>$this->house,
+         'flat'=>$this->flat,
+     ]);
+        session()->flash('message', 'Contract successfully added.');
     }
     public function render()
     {
-        return view('livewire.contract-form');
+        $states = DB::table('states')->get();
+        $types = DB::table('types')->get();
+        return view('livewire.contract-form',['states'=>$states,'types'=>$types]);
     }
 }
